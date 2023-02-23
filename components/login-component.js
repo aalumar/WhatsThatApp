@@ -1,8 +1,9 @@
 'use strict';
 
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { Text, TextInput, View, Button, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient'
+import { LinearGradient } from 'expo-linear-gradient';
+import globalStyles from '../styles/global-styles';
 
 var validator = require("email-validator");
 
@@ -51,7 +52,7 @@ class Login extends Component {
           { /*Title view*/ }
           <View style={{flex: 3, justifyContent: 'center'}}>
 
-            <Text style={styles.title}>
+            <Text style={[styles.title, globalStyles.bold]}>
                 What's That?
             </Text>
 
@@ -63,14 +64,14 @@ class Login extends Component {
             <View style={{marginBottom: '5%'}}>
 
               <TextInput
-                style = {styles.textInput}
+                style = {[styles.textInput, globalStyles.italic]}
                 placeholder = "Enter your email"
                 value = {this.state.email}
                 onChangeText = {(email) => this.setState({email})}
               />
                 
               <TextInput
-                style = {styles.textInput}
+                style = {[styles.textInput, globalStyles.italic]}
                 placeholder = "Enter your password"
                 secureTextEntry = {true}
                 value = {this.state.password}
@@ -96,12 +97,12 @@ class Login extends Component {
           </View>
 
           <View style={{flex: 1}}>
-            <Text style={{ color: 'blue', fontFamily: 'Helvetica', textDecorationLine: 'underline'}}>
+            <Text style={[{ color: 'blue', fontFamily: 'Helvetica'}, globalStyles.underline]}>
                 No account? Register here.
             </Text>
           </View>
 
-          </LinearGradient>
+        </LinearGradient>
 
       </View>
 
@@ -131,8 +132,7 @@ const styles = StyleSheet.create({
   title: {
     color: '#daf0e0',
     fontFamily: 'Helvetica',
-    fontSize: 32,
-    fontWeight: 'bold'
+    fontSize: 32
   },
 
   textInput: {
@@ -142,9 +142,7 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
     padding: '4%',
     fontSize: 16,
-    fontFamily: 'Candara',
-    fontWeight: '500',
-    fontStyle: 'italic'
+    fontFamily: 'Candara'
   }
 })
 
