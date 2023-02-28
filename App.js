@@ -1,16 +1,32 @@
 'use strict';
 
 import React, { Component } from 'react'
-import Login from './components/login-component';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './components/login-component';
+import RegisterScreen from './components/register-component';
 
 class App extends Component {
 
   render () {
 
+    const Stack = createNativeStackNavigator();
+
     return (
+      
+      // <RegisterScreen/>
 
-      <Login />
+      <NavigationContainer>
 
+        <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+
+        </Stack.Navigator>
+
+      </NavigationContainer>
+      
     );
   }
 }

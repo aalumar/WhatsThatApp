@@ -9,21 +9,23 @@ var validator = require("email-validator");
 
 // Class component method
 
-class LoginScreen extends Component {
+class RegisterScreen extends Component {
 
   constructor(props) {
 
     super(props);
 
     this.state = {
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
-      failText: ""
+      passwordConfirm: ""
     };
 
   }
 
-  loginClick = () => {
+  registerClick = () => {
 
     const isEmailValid = validator.validate(this.state.email);
     console.log(isEmailValid);
@@ -42,8 +44,6 @@ class LoginScreen extends Component {
   }
 
   render () {
-
-
 
     return (
 
@@ -65,26 +65,49 @@ class LoginScreen extends Component {
 
             <View style={{marginBottom: '5%'}}>
 
-              <TextInput
-                style = {[styles.textInput, globalStyles.italic]}
-                placeholder = "Enter your email..."
-                value = {this.state.email}
-                onChangeText = {(email) => this.setState({email})}
-              />
+
+                <TextInput
+                    style = {[styles.textInput, globalStyles.italic]}
+                    placeholder = "Enter your first name..."
+                    value = {this.state.firstName}
+                    onChangeText = {(firstName) => this.setState({firstName})}
+                />
                 
-              <TextInput
-                style = {[styles.textInput, globalStyles.italic]}
-                placeholder = "Enter your password..."
-                secureTextEntry = {true}
-                value = {this.state.password}
-                onChangeText = {(password) => this.setState({password})}
-              />
+                <TextInput
+                    style = {[styles.textInput, globalStyles.italic]}
+                    placeholder = "Enter your last name..."
+                    value = {this.state.lastName}
+                    onChangeText = {(lastName) => this.setState({lastName})}
+                />
+
+                <TextInput
+                    style = {[styles.textInput, globalStyles.italic]}
+                    placeholder = "Enter your email..."
+                    value = {this.state.email}
+                    onChangeText = {(email) => this.setState({email})}
+                />
+                    
+                <TextInput
+                    style = {[styles.textInput, globalStyles.italic]}
+                    placeholder = "Enter your password..."
+                    secureTextEntry = {true}
+                    value = {this.state.password}
+                    onChangeText = {(password) => this.setState({password})}
+                />
+
+                <TextInput
+                    style = {[styles.textInput, globalStyles.italic]}
+                    placeholder = "Confirm your password..."
+                    secureTextEntry = {true}
+                    value = {this.state.passwordConfirm}
+                    onChangeText = {(passwordConfirm) => this.setState({passwordConfirm})}
+                />
 
             </View>
 
             <Button color='#2a363b'
-              title = "Log in"
-              onPress = {() => this.loginClick()}
+              title = "Register"
+              onPress = {() => this.registerClick()}
             />
 
           </View>
@@ -99,11 +122,11 @@ class LoginScreen extends Component {
           </View>
 
           <View style={{flex: 1}}>
-            <Pressable style={styles.registerButton}
-                       onPress={() => this.props.navigation.navigate('Register')}>
+            <Pressable style={styles.backButton}
+                       onPress={() => this.props.navigation.navigate('Login')}>
               <Text 
               style={[{ color: 'white', fontFamily: 'Helvetica'}, globalStyles.underline]}>
-                  NO ACCOUNT? REGISTER HERE
+                  GO BACK
               </Text>
             </Pressable>
           </View>
@@ -151,7 +174,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Candara'
   },
 
-  registerButton: {
+  backButton: {
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 12,
@@ -161,4 +184,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default LoginScreen
+export default RegisterScreen
