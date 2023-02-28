@@ -32,18 +32,66 @@ class LoginScreen extends Component {
     const isPassValid = password_regex.test(this.state.password);
     console.log(isPassValid);
 
-    if (!isEmailValid || !isPassValid) {
-      this.setState({failText: "Invalid credentials."})
+    // if else statements to return error message to the user regarding what part of the form is incorrect
+    if (!isEmailValid) {
+      this.setState({failText: "Email is invalid."})
+    }
+    else if(!isPassValid) {
+      this.setState({failText: "Password is invalid."})
     }
     else {
-      this.setState({failText: "Good to go."})
+      this.setState({failText:""})
+      console.log("Good to go.")
+      this.state.formComplete = true
+    }
+
+    if (this.state.email == "" || this.state.password == "") {
+      this.setState({failText: "Please complete the form."})
+    }
+
+
+    if (this.state.formComplete) {
+      this.login()
     }
 
   }
 
+  login = () => {
+
+    // create user data using state variables to send to server
+    let user = {
+      email: this.state.email,
+      password: this.state.password
+    }
+
+    return fetch("http://localhost:3333/api/1.0.0/login", {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+    .then(response => {
+
+      const status = response.status
+
+      if (status == 200) {
+        console.log("Logged in successfully")
+        this.props.navigation.navigate('Register')
+      }
+      else if(status == 400) {
+        this.setState({failText: "Email or password is invalid."})
+      }
+      else {
+        this.setState({failText: "There is a problem on our side. Please try again in a bit."})
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
   render () {
-
-
 
     return (
 

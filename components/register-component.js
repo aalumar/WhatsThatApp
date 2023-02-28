@@ -21,6 +21,7 @@ class RegisterScreen extends Component {
       email: "",
       password: "",
       passwordConfirm: "",
+      failText: "",
       formComplete: false
     };
 
@@ -63,9 +64,7 @@ class RegisterScreen extends Component {
         this.state.email == "" ||
         this.state.password == "" ||
         this.state.passwordConfirm == "") {
-          
           this.setState({failText: "Please complete the form."})
-
     }
 
     if (this.state.formComplete) {
@@ -92,9 +91,17 @@ class RegisterScreen extends Component {
       },
       body: JSON.stringify(userData)
     })
-    .then((response) => {
-      console.log("User created")
-      this.props.navigation.navigate('Login')
+    .then(response => {
+
+      const status = response.status
+
+      if(status == 201) {
+        console.log("User created")
+        this.props.navigation.navigate('Login')
+      }
+      else {
+        this.setState({failText: "There is a problem on our side. Please try again in a bit."})
+      }
     })
     .catch((error) => {
       console.log(error)
@@ -180,8 +187,11 @@ class RegisterScreen extends Component {
           </View>
 
           <View style={{flex: 1}}>
+            { /* the navigation is implemented this way to reset the login page's states*/ }
             <Pressable style={styles.backButton}
-                       onPress={() => this.props.navigation.goBack()}>
+                      onPress={() => this.props.navigation.reset({ 
+                        routes:[{name: 'Login'}]
+                       })}>
               <Text 
               style={[{ color: 'white', fontFamily: 'Helvetica'}, globalStyles.underline]}>
                   GO BACK
