@@ -14,8 +14,6 @@ class App extends Component {
 
     return (
       
-      // <RegisterScreen/>
-
       <NavigationContainer>
 
         <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>

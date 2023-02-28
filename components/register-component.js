@@ -20,27 +20,85 @@ class RegisterScreen extends Component {
       lastName: "",
       email: "",
       password: "",
-      passwordConfirm: ""
+      passwordConfirm: "",
+      formComplete: false
     };
 
   }
 
+  /**
+   * Function to run after 'Register' button is clicked.
+   * Will validate form and call addUser() if passes successfully.
+   */
   registerClick = () => {
 
-    const isEmailValid = validator.validate(this.state.email);
-    console.log(isEmailValid);
+    const isEmailValid = validator.validate(this.state.email)
 
-    const password_regex = new RegExp('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,30}$');
-    const isPassValid = password_regex.test(this.state.password);
-    console.log(isPassValid);
+    const password_regex = new RegExp('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,30}$')
+    const isPassValid = password_regex.test(this.state.password)
 
-    if (!isEmailValid || !isPassValid) {
-      this.setState({failText: "Invalid credentials."})
+    // if else statements to return error message to the user regarding what part of the form is incorrect
+    if (!isEmailValid && !isPassValid) {
+      this.setState({failText: "Email and password are invalid."})
+    }
+    else if (!isEmailValid) {
+      this.setState({failText: "Email is invalid."})
+    }
+    else if(!isPassValid) {
+      this.setState({failText: "Password is invalid."})
+    }
+    else if(this.state.password != this.state.passwordConfirm) {
+      this.setState({failText: "Passwords do not match."})
     }
     else {
-      this.setState({failText: "Good to go."})
+      this.setState({failText:""})
+      console.log("Good to go.")
+      this.state.formComplete = true
     }
 
+
+    // check if any part of the form is incomplete to override the error message
+    if (this.state.firstName == "" ||
+        this.state.lastName == "" ||
+        this.state.email == "" ||
+        this.state.password == "" ||
+        this.state.passwordConfirm == "") {
+          
+          this.setState({failText: "Please complete the form."})
+
+    }
+
+    if (this.state.formComplete) {
+      this.addUser()
+    }
+  }
+
+  addUser = () => {
+
+    // create user data using state variables to send to server
+    let userData = {
+      first_name: this.state.firstName,
+      last_name: this.state.lastName,
+      email: this.state.email,
+      password: this.state.password
+    }
+
+    console.log(userData)
+
+    return fetch("http://localhost:3333/api/1.0.0/user", {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    })
+    .then((response) => {
+      console.log("User created")
+      this.props.navigation.navigate('Login')
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   }
 
   render () {
@@ -123,7 +181,7 @@ class RegisterScreen extends Component {
 
           <View style={{flex: 1}}>
             <Pressable style={styles.backButton}
-                       onPress={() => this.props.navigation.navigate('Login')}>
+                       onPress={() => this.props.navigation.goBack()}>
               <Text 
               style={[{ color: 'white', fontFamily: 'Helvetica'}, globalStyles.underline]}>
                   GO BACK
