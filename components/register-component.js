@@ -94,10 +94,14 @@ class RegisterScreen extends Component {
     .then(response => {
 
       const status = response.status
+      console.log(status)
 
-      if(status == 201) {
+      if(status === 201) {
         console.log("User created")
         this.props.navigation.navigate('Login')
+      }
+      else if(status === 400) {
+        this.setState({failText: "An account associated with that email already exists."})
       }
       else {
         this.setState({failText: "There is a problem on our side. Please try again in a bit."})
@@ -180,7 +184,7 @@ class RegisterScreen extends Component {
           { /*Footer/error message view*/ }
           <View style={{flex: 1}}>
 
-            <Text style={{ color: 'red', fontFamily: 'Helvetica'}}>
+            <Text style={{ color: '#b52f2f', fontFamily: 'Helvetica'}}>
                 {this.state.failText}
             </Text>
 

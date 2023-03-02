@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { Text, TextInput, View, Button, StyleSheet, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/global-styles';
 
 var validator = require("email-validator");
@@ -75,11 +76,27 @@ class LoginScreen extends Component {
 
       const status = response.status
 
-      if (status == 200) {
-        console.log("Logged in successfully")
-        this.props.navigation.navigate('Register')
+      if (status === 200) {
+        const rJson = response.json()
+
+        .then(async (rJson) => {
+
+          console.log(rJson)
+
+          try {
+            await AsyncStorage.setItem("whatsthat_user_id", rJson.id)
+            await AsyncStorage.setItem("whatsthat_session_token", rJson.token)
+            
+            this.props.navigation.navigate('Home')
+  
+          } catch {
+            this.setState({failText: "Please try again later. If problem persists, try clearing your cache."})
+          }
+
+        })
+       
       }
-      else if(status == 400) {
+      else if(status === 400) {
         this.setState({failText: "Email or password is invalid."})
       }
       else {
@@ -140,7 +157,7 @@ class LoginScreen extends Component {
           { /*Footer/error message view*/ }
           <View style={{flex: 1}}>
 
-            <Text style={{ color: 'red', fontFamily: 'Helvetica'}}>
+            <Text style={[{color: '#b52f2f'}, [globalStyles.helvetica, globalStyles.bold]]}>
                 {this.state.failText}
             </Text>
 
