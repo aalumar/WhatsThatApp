@@ -37,7 +37,7 @@ class RegisterScreen extends Component {
 
     const password_regex = new RegExp('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,30}$')
     const isPassValid = password_regex.test(this.state.password)
-
+    
     // if else statements to return error message to the user regarding what part of the form is incorrect
     if (!isEmailValid && !isPassValid) {
       this.setState({failText: "Email and password are invalid."})
@@ -72,6 +72,10 @@ class RegisterScreen extends Component {
     }
   }
 
+  /**
+   * Function that is called if validation from registerClick() passes.
+   * Uses Fetch API to make a call to the server that takes the user to the login page if the user is created successfully.
+   */
   addUser = () => {
 
     // create user data using state variables to send to server
@@ -101,14 +105,14 @@ class RegisterScreen extends Component {
         this.props.navigation.navigate('Login')
       }
       else if(status === 400) {
-        this.setState({failText: "An account associated with that email already exists."})
+        throw "An account associated with that email already exists."
       }
       else {
-        this.setState({failText: "There is a problem on our side. Please try again in a bit."})
+        throw "There is a problem on our side. Please try again in a bit."
       }
     })
     .catch((error) => {
-      console.log(error)
+      this.setState({failText: error})
     })
   }
 

@@ -24,6 +24,10 @@ class LoginScreen extends Component {
 
   }
 
+  /** 
+   * Function to run after 'Login' button is clicked.
+   * Will validate form and call login() if passes successfully.
+   */
   loginClick = () => {
 
     const isEmailValid = validator.validate(this.state.email);
@@ -57,6 +61,11 @@ class LoginScreen extends Component {
 
   }
 
+
+  /** 
+   * Function that is called if validation from loginClick() passes.
+   * Uses Fetch API to make a call to the server that takes the user to the home screen page if the user is logged in successfully.
+   */
   login = () => {
 
     // create user data using state variables to send to server
@@ -77,6 +86,7 @@ class LoginScreen extends Component {
       const status = response.status
 
       if (status === 200) {
+        
         const rJson = response.json()
 
         .then(async (rJson) => {
@@ -90,21 +100,21 @@ class LoginScreen extends Component {
             this.props.navigation.navigate('Home')
   
           } catch {
-            this.setState({failText: "Please try again later. If problem persists, try clearing your cache."})
+            throw "Please try again later. If problem persists, try clearing your cache."
           }
 
         })
        
       }
       else if(status === 400) {
-        this.setState({failText: "Email or password is invalid."})
+        throw "Email or password is invalid."
       }
       else {
-        this.setState({failText: "There is a problem on our side. Please try again in a bit."})
+        throw "There is a problem on our side. Please try again in a bit."
       }
     })
     .catch((error) => {
-      console.log(error)
+      this.setState({failText: error})
     })
   }
 
