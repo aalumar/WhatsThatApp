@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import globalStyles from '../styles/global-styles';
+import globalStyles from '../styles/global';
 
 class HomeScreen extends Component {
 
