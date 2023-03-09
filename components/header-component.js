@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import globalStyles from '../styles/global';
 
-class HomeScreen extends Component {
+class Header extends Component {
 
   constructor(props) {
 
@@ -22,7 +22,9 @@ class HomeScreen extends Component {
 
       <View style={styles.flexContainer}>
 
-        <Text style={[styles.title, globalStyles.bold]}> Home screen </Text>
+        <Text> + </Text>
+        <Text>  </Text>
+        <Text> Logout </Text>
 
       </View>
 
@@ -37,13 +39,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#99b898',
     justifyContent: 'center',
     alignItems: 'center'
-  },
-
-  title: {
-    color: '#daf0e0',
-    fontFamily: 'Helvetica',
-    fontSize: 32
   }
+
 })
 
-export default HomeScreen
+export default Header

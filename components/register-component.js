@@ -7,8 +7,6 @@ import globalStyles from '../styles/global';
 
 var validator = require("email-validator");
 
-// Class component method
-
 class RegisterScreen extends Component {
 
   constructor(props) {

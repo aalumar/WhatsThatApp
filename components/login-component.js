@@ -8,8 +8,6 @@ import globalStyles from '../styles/global';
 
 var validator = require("email-validator");
 
-// Class component method
-
 class LoginScreen extends Component {
 
   constructor(props) {
@@ -97,7 +95,7 @@ class LoginScreen extends Component {
             await AsyncStorage.setItem("whatsthat_user_id", rJson.id)
             await AsyncStorage.setItem("whatsthat_session_token", rJson.token)
             
-            this.props.navigation.navigate('Home')
+            this.props.navigation.navigate('Chats')
   
           } catch {
             throw "Please try again later. If problem persists, try clearing your cache."
