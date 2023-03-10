@@ -1,8 +1,8 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import globalStyles from '../styles/global';
+import { View, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 class Header extends Component {
 
@@ -20,11 +20,11 @@ class Header extends Component {
 
     return (
 
-      <View style={styles.flexContainer}>
+      <View style={styles.container}>
 
-        <Text> + </Text>
-        <Text>  </Text>
-        <Text> Logout </Text>
+        <Ionicons name="search-outline" size={28} color="#ffffff" />
+        <Ionicons name="add-outline" size={28} color="#ffffff" style={styles.icon} />
+        <Ionicons name="ellipsis-vertical-outline" size={28} color="#ffffff" style={styles.icon} />
 
       </View>
 
@@ -34,11 +34,15 @@ class Header extends Component {
 
 const styles = StyleSheet.create({
 
-  flexContainer: {
-    flex: 1,
-    backgroundColor: '#99b898',
-    justifyContent: 'center',
-    alignItems: 'center'
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: 8,
+    backgroundColor: '#2a363b'
+    },
+
+  icon: {
+    marginLeft: 20
   }
 
 })

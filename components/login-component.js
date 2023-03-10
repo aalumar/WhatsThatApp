@@ -144,14 +144,14 @@ class LoginScreen extends Component {
             <View style={{marginBottom: '5%'}}>
 
               <TextInput
-                style = {[globalStyles.textInput]}
+                style = {globalStyles.textInput}
                 placeholder = "Email..."
                 value = {this.state.email}
                 onChangeText = {(email) => this.setState({email})}
               />
                 
               <TextInput
-                style = {[globalStyles.textInput]}
+                style = {globalStyles.textInput}
                 placeholder = "Password..."
                 secureTextEntry = {true}
                 value = {this.state.password}
