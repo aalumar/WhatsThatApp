@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 class Header extends Component {
@@ -22,10 +22,18 @@ class Header extends Component {
 
       <View style={styles.container}>
 
-        <Ionicons name="search-outline" size={28} color="#ffffff" />
-        <Ionicons name="add-outline" size={28} color="#ffffff" style={styles.icon} />
-        <Ionicons name="ellipsis-vertical-outline" size={28} color="#ffffff" style={styles.icon} />
+        <TouchableOpacity> 
+          <Ionicons name="search-outline" size={28} color="#ffffff" />
+        </TouchableOpacity>
 
+        <TouchableOpacity>
+          <Ionicons name="add-outline" size={28} color="#ffffff" style={styles.icon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity>
+          <Ionicons name="ellipsis-vertical-outline" size={28} color="#ffffff" style={styles.icon} />
+        </TouchableOpacity>
+        
       </View>
 
     )

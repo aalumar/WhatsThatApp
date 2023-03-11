@@ -1,11 +1,12 @@
 'use strict';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
-import PreviewChat from './preview-chat-component';
+import { Text, View, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import Contacts from './contacts-component';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import globalStyles from '../styles/global';
 
-class ChatsScreen extends Component {
+class ContactsScreen extends Component {
 
   constructor(props) {
 
@@ -14,7 +15,7 @@ class ChatsScreen extends Component {
     this.state = {
 
       isLoading: true,
-      chatList: []
+      contactsList: []
       
     };
 
@@ -26,7 +27,7 @@ class ChatsScreen extends Component {
       this.checkLoggedIn()
     })
 
-    this.getChats()
+    this.getContacts()
   }
 
   componentWillUnmount() {
@@ -42,22 +43,23 @@ class ChatsScreen extends Component {
     }
   }
 
-  getChats = async () => {
+  getContacts = async () => {
 
-    return fetch("http://localhost:3333/api/1.0.0/chat", {
+    return fetch("http://localhost:3333/api/1.0.0/contacts", {
       headers: {
         "X-Authorization": await AsyncStorage.getItem('whatsthat_session_token')
       }
     })
     .then((response) => response.json())
     .then((responseJson) => {
+
       console.log(responseJson)
 
       this.setState({
         isLoading: false,
-        chatList: responseJson
+        contactsList: responseJson
       })
-      console.log(this.state.chatList)
+      console.log(this.state.contactsList)
     })
     // Add error message here
     .catch((error) => {
@@ -82,10 +84,10 @@ class ChatsScreen extends Component {
         <View style={styles.flatListParentView}>
 
           <FlatList
-          data={this.state.chatList}
+          data={this.state.contactsList}
           renderItem={({item}) =>
-              
-            <PreviewChat name={item.name} lastMessage={item.last_message.message}/>
+
+            <Contacts name={item.first_name + " " + item.last_name}/>
 
           }
 
@@ -101,12 +103,10 @@ class ChatsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-
   flatListParentView: {
     flex: 1,
     backgroundColor: '#99b898'
   }
-
 })
 
-export default ChatsScreen
+export default ContactsScreen

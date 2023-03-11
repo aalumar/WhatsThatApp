@@ -3,8 +3,8 @@
 import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginScreen from '../components/login-component';
-import RegisterScreen from '../components/register-component';
+import LoginScreen from '../components/login-screen';
+import RegisterScreen from '../components/register-screen';
 import TabNavigator from './tab-navigator';
 
 class StackNavigator extends Component {
