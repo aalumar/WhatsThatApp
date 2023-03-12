@@ -19,8 +19,9 @@ class Contacts extends Component {
             <View style={{flex: 3, flexDirection: 'row'}}>
 
                 <Image 
-                source={require('./whatsthatlogo.png')}
-                style={styles.image}
+                    src={{uri: image}}
+                    defaultSource={require('./whatsthatlogo.png')}
+                    style={styles.image}
                 />
 
                 <Text style={styles.name}> {name} </Text>

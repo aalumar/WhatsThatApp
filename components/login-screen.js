@@ -29,11 +29,9 @@ class LoginScreen extends Component {
   loginClick = () => {
 
     const isEmailValid = validator.validate(this.state.email);
-    console.log(isEmailValid);
 
     const password_regex = new RegExp('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,30}$');
     const isPassValid = password_regex.test(this.state.password);
-    console.log(isPassValid);
 
     // if else statements to return error message to the user regarding what part of the form is incorrect
     if (!isEmailValid) {
@@ -44,7 +42,6 @@ class LoginScreen extends Component {
     }
     else {
       this.setState({failText:""})
-      console.log("Good to go.")
       this.state.formComplete = true
     }
 

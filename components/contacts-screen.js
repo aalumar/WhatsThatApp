@@ -53,8 +53,6 @@ class ContactsScreen extends Component {
     .then((response) => response.json())
     .then((responseJson) => {
 
-      console.log(responseJson)
-
       this.setState({
         isLoading: false,
         contactsList: responseJson

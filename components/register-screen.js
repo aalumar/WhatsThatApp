@@ -51,7 +51,6 @@ class RegisterScreen extends Component {
     }
     else {
       this.setState({failText:""})
-      console.log("Good to go.")
       this.state.formComplete = true
     }
 
@@ -84,8 +83,6 @@ class RegisterScreen extends Component {
       password: this.state.password
     }
 
-    console.log(userData)
-
     return fetch("http://localhost:3333/api/1.0.0/user", {
       method: 'post',
       headers: {
@@ -99,7 +96,6 @@ class RegisterScreen extends Component {
       console.log(status)
 
       if(status === 201) {
-        console.log("User created")
         this.props.navigation.navigate('Login')
       }
       else if(status === 400) {

@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import {MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
 
 class Header extends Component {
@@ -31,7 +32,20 @@ class Header extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <Ionicons name="ellipsis-vertical-outline" size={28} color="#ffffff" style={styles.icon} />
+
+          <MenuProvider>
+            <Menu>
+              <MenuTrigger>
+                <Ionicons name="ellipsis-vertical-outline" size={28} color="#ffffff" style={styles.icon} />
+              </MenuTrigger>
+
+              <MenuOptions>
+                <MenuOption text="View blocked users"/>
+                <MenuOption text="Logout"/>
+              </MenuOptions>
+            </Menu>
+          </MenuProvider>
+        
         </TouchableOpacity>
         
       </View>
