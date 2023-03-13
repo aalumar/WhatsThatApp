@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../components/login-screen';
 import RegisterScreen from '../components/register-screen';
-import TabNavigator from './tab-navigator';
+import ChatStackNavigator from './chat-stack-navigator';
 
 class StackNavigator extends Component {
 
@@ -19,9 +19,9 @@ class StackNavigator extends Component {
     
                 <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
 
-                <Stack.Screen name='Login' component={LoginScreen} />
-                <Stack.Screen name='Register' component={RegisterScreen} />
-                <Stack.Screen name='Chats' component={TabNavigator} />
+                    <Stack.Screen name='Login' component={LoginScreen} />
+                    <Stack.Screen name='Register' component={RegisterScreen} />
+                    <Stack.Screen name='Chats' component={ChatStackNavigator} />
                 
                 </Stack.Navigator>
     

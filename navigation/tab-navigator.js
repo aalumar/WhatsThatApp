@@ -2,10 +2,10 @@
 
 import React, { Component } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import Header from '../components/header-component';
 import ChatsScreen from '../components/chats-screen';
 import ContactsScreen from '../components/contacts-screen';
 import ProfileScreen from '../components/profile-screen';
-import Header from '../components/header-component';
 
 class TabNavigator extends Component {
 

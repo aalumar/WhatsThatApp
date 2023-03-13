@@ -1,8 +1,8 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import {MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, renderers } from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
 
 class Header extends Component {
@@ -19,6 +19,8 @@ class Header extends Component {
 
   render () {
 
+    const { SlideInMenu } = renderers;
+
     return (
 
       <View style={styles.container}>
@@ -32,20 +34,20 @@ class Header extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity>
-
           <MenuProvider>
-            <Menu>
+            <Menu renderer={SlideInMenu}>
               <MenuTrigger>
                 <Ionicons name="ellipsis-vertical-outline" size={28} color="#ffffff" style={styles.icon} />
               </MenuTrigger>
 
               <MenuOptions>
                 <MenuOption text="View blocked users"/>
-                <MenuOption text="Logout"/>
+                <MenuOption>
+                  <Text style={{color: 'red'}}> Logout </Text>
+                </MenuOption>
               </MenuOptions>
             </Menu>
           </MenuProvider>
-        
         </TouchableOpacity>
         
       </View>
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     padding: 8,
-    backgroundColor: '#2a363b'
+    backgroundColor: '#2a363b',
     },
 
   icon: {

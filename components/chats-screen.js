@@ -2,7 +2,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
 import PreviewChat from './preview-chat-component';
 
 class ChatsScreen extends Component {
@@ -84,8 +84,9 @@ class ChatsScreen extends Component {
           data={this.state.chatList}
           renderItem={({item}) =>
 
-            <PreviewChat name={item.name} lastMessage={item.last_message.message}/>
-
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('IndividualChat')}>
+              <PreviewChat name={item.name} lastMessage={item.last_message.message}/>
+            </TouchableOpacity>
           }
 
           keyExtractor = {({id}, index) => id}
