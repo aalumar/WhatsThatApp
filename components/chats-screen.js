@@ -84,8 +84,16 @@ class ChatsScreen extends Component {
           data={this.state.chatList}
           renderItem={({item}) =>
 
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('IndividualChat')}>
+            
+
+            // passing the chat's ID to the IndividualChat screen (so we can get the messages)
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('IndividualChat', {
+              chatID: item.chat_id}
+              )}>
+
+              { console.log(item.chat_id) }
               <PreviewChat name={item.name} lastMessage={item.last_message.message}/>
+
             </TouchableOpacity>
           }
 

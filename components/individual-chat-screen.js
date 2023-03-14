@@ -3,21 +3,26 @@
 import React, { Component } from 'react';
 import { Text, View, ActivityIndicator, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GiftedChat } from 'react-native-gifted-chat';
 import globalStyles from '../styles/global';
 
 class IndividualChat extends Component {
 
   constructor(props) {
-
     super(props);
 
     this.state = {
       
       isLoading: true,
+      messages: [],
+      chatDetails: []
 
     };
 
+    this.onSend = this.onSend.bind(this);
+
   }
+  
 
   componentDidMount() {
     // check user is logged in
@@ -26,6 +31,8 @@ class IndividualChat extends Component {
     })
 
     this.getMessages()
+    this.formatMessage()
+
   }
 
   componentWillUnmount() {
@@ -41,30 +48,51 @@ class IndividualChat extends Component {
     }
   }
 
+  onSend(messages = []) {
+    this.setState(previousState => ({
+      messages: GiftedChat.append(previousState.messages, messages),
+    }));
+  }
+
   getMessages = async () => {
 
-    const id = await AsyncStorage.getItem('whatsthat_user_id')
+    const chatID = this.props.route.params.chatID
 
-    // return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
-    //   headers: {
-    //     "X-Authorization": await AsyncStorage.getItem('whatsthat_session_token')
-    //   }
-    // })
-    // .then((response) => response.json())
-    // .then((responseJson) => {
+    return fetch("http://localhost:3333/api/1.0.0/chat/" + chatID, {
+      headers: {
+        "X-Authorization": await AsyncStorage.getItem('whatsthat_session_token')
+      }
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
 
-    //   this.setState({
-    //     isLoading: false,
-    //     userProfile: responseJson
-    //   })
+      this.setState({
+        isLoading: false,
+        chatDetails: responseJson.messages
+      })
 
-    //   console.log(this.state.userProfile)
+      console.log(this.state.chatDetails)
 
-    // })
-    // // Add error message here
-    // .catch((error) => {
-    //   console.log(error)
-    // })
+    })
+    // Add error message here
+    .catch((error) => {
+      console.log(error)
+    })
+
+  }
+
+  formatMessage() {
+
+    console.log(this.state.chatDetails)
+    this.state.chatDetails = this.state.chatDetails.map(({message_id, timestamp, message, author}) => {
+      return {
+        _id: message_id,
+        createdAt: timestamp,
+        text: message,
+        user: author
+      }
+    });
+
 
   }
 
@@ -72,11 +100,16 @@ class IndividualChat extends Component {
     
         return (
 
-            <View style={globalStyles.flexContainer}>
+          <View style={{flex: 1}}>
 
-                <Text style={globalStyles.title}> Messages </Text>
-
-            </View>
+            <GiftedChat
+              messages={this.state.messages}
+              onSend={messages => this.onSend(messages)}
+              user={{
+                _id: 1,
+              }}
+            />
+          </View>
 
         )
     }
