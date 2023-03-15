@@ -18,7 +18,8 @@ class TabNavigator extends Component {
             // Adding a React.Fragment so we can include the header above the tab navigator
             // React.Fragment allows us to group a list of children and return them
             <>
-                <Header />
+                {/*Passing down the navigation prop to our Header component (for the logout function)*/}
+                <Header navigation={this.props.navigation} />
 
                 <Tab.Navigator initialRouteName='Chats' screenOptions={{
                     tabBarLabelStyle: {fontSize: 14, fontWeight: 'bold'},
