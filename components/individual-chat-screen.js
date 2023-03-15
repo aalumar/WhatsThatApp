@@ -30,6 +30,9 @@ class IndividualChat extends Component {
       this.checkLoggedIn()
     })
 
+    //Updating header title of stack navigator to the chat's name
+    this.props.navigation.setOptions({ title: this.props.route.params.chatName})
+
     this.getMessages()
     this.formatMessage()
 
