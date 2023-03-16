@@ -1,12 +1,12 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Text, TextInput, Image, View, Button, StyleSheet, Pressable } from 'react-native';
+import { Text, TextInput, Image, View, Button, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/global';
 
-var validator = require("email-validator");
+const validator = require('email-validator');
 
 class LoginScreen extends Component {
 
@@ -15,14 +15,14 @@ class LoginScreen extends Component {
     super(props);
 
     this.state = {
-      email: "",
-      password: "",
-      failText: ""
+      email: '',
+      password: '',
+      failText: ''
     };
 
   }
 
-  /** 
+  /**
    * Function to run after 'Login' button is clicked.
    * Will validate form and call login() if passes successfully.
    */
@@ -30,102 +30,126 @@ class LoginScreen extends Component {
 
     const isEmailValid = validator.validate(this.state.email);
 
-    const password_regex = new RegExp('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,30}$');
-    const isPassValid = password_regex.test(this.state.password);
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,30}$/;
+    const isPassValid = passwordRegex.test(this.state.password);
 
     // if else statements to return error message to the user regarding what part of the form is incorrect
     if (!isEmailValid) {
-      this.setState({failText: "Email is invalid."})
+
+      this.setState({ failText: 'Email is invalid.' });
+
     }
-    else if(!isPassValid) {
-      this.setState({failText: "Password is invalid."})
+    else if (!isPassValid) {
+
+      this.setState({ failText: 'Password is invalid.' });
+
     }
     else {
-      this.setState({failText:""})
-      this.state.formComplete = true
+
+      this.setState({ failText: '' });
+      this.state.formComplete = true;
+
     }
 
-    if (this.state.email == "" || this.state.password == "") {
-      this.setState({failText: "Please complete the form."})
-    }
+    if (this.state.email === '' || this.state.password === '') {
 
+      this.setState({ failText: 'Please complete the form.' });
+
+    }
 
     if (this.state.formComplete) {
-      this.login()
+
+      this.login();
+
     }
 
-  }
+  };
 
-
-  /** 
+  /**
    * Function that is called if validation from loginClick() passes.
    * Uses Fetch API to make a call to the server that takes the user to the home screen page if the user is logged in successfully.
    */
   login = () => {
 
     // create user data using state variables to send to server
-    let user = {
+    const user = {
       email: this.state.email,
       password: this.state.password
-    }
+    };
 
-    return fetch("http://localhost:3333/api/1.0.0/login", {
+    return fetch('http://localhost:3333/api/1.0.0/login', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(user)
     })
-    .then(response => {
+      .then((response) => {
 
-      const status = response.status
+        const status = response.status;
 
-      if (status === 200) {
-        
-        const rJson = response.json()
+        if (status === 200) {
 
-        .then(async (rJson) => {
+          const rJson = response.json()
 
-          console.log(rJson)
+            .then(async () => {
 
-          try {
-            await AsyncStorage.setItem("whatsthat_user_id", rJson.id)
-            await AsyncStorage.setItem("whatsthat_session_token", rJson.token)
-            
-            this.props.navigation.navigate('Chats')
-  
-          } catch {
-            throw "Please try again later. If problem persists, try clearing your cache."
-          }
+              // console.log(rJson);
 
-        })
-       
-      }
-      else if(status === 400) {
-        throw "Email or password is invalid."
-      }
-      else {
-        throw "There is a problem on our side. Please try again in a bit."
-      }
-    })
-    .catch((error) => {
-      this.setState({failText: error})
-    })
-  }
+              try {
 
-  render () {
+                await AsyncStorage.setItem('whatsthat_user_id', rJson.id);
+                await AsyncStorage.setItem('whatsthat_session_token', rJson.token);
+
+                this.props.navigation.navigate('Chats');
+
+              }
+
+              catch {
+
+                throw 'Please try again later. If problem persists, try clearing your cache.';
+
+              }
+
+            });
+
+        }
+        else if (status === 400) {
+
+          throw 'Email or password is invalid.';
+
+        }
+        else {
+
+          throw 'There is a problem on our side. Please try again in a bit.';
+
+        }
+
+      })
+      .catch((error) => {
+
+        this.setState({ failText: error });
+
+      });
+
+  };
+
+  render() {
 
     return (
 
       <View style={globalStyles.flexContainer}>
-        
-        <LinearGradient colors={['rgba(44, 138, 69, 0.8)', 'transparent']} style={globalStyles.linearBG}>
-      
-          { /*Title view*/ }
-          <View style={{flex: 3, justifyContent: 'space-evenly'}}>
+
+        <LinearGradient
+          colors={['rgba(44, 138, 69, 0.8)', 'transparent']}
+          style={globalStyles.linearBG}
+        >
+
+          { /* Title view */ }
+          <View style={{ flex: 3, justifyContent: 'space-evenly' }}>
 
             <Text style={globalStyles.title}>
-                What's That?
+              What's That?
             </Text>
 
             <Image
@@ -135,50 +159,52 @@ class LoginScreen extends Component {
 
           </View>
 
-          { /*Form detail view*/ }
-          <View style={{flex: 2, justifyContent: 'flex-end'}}>
+          { /* Form detail view */ }
+          <View style={{ flex: 2, justifyContent: 'flex-end' }}>
 
-            <View style={{marginBottom: '5%'}}>
+            <View style={{ marginBottom: '5%' }}>
 
               <TextInput
-                style = {globalStyles.textInput}
-                placeholder = "Email..."
-                value = {this.state.email}
-                onChangeText = {(email) => this.setState({email})}
+                style={globalStyles.textInput}
+                placeholder="Email..."
+                value={this.state.email}
+                onChangeText={(email) => this.setState({ email })}
               />
-                
+
               <TextInput
-                style = {globalStyles.textInput}
-                placeholder = "Password..."
-                secureTextEntry = {true}
-                value = {this.state.password}
-                onChangeText = {(password) => this.setState({password})}
+                style={globalStyles.textInput}
+                placeholder="Password..."
+                secureTextEntry
+                value={this.state.password}
+                onChangeText={(password) => this.setState({ password })}
               />
 
             </View>
 
-            <Button color='#2a363b'
-              title = "Log in"
-              onPress = {() => this.loginClick()}
+            <Button
+              color="#2a363b"
+              title="Log in"
+              onPress={() => this.loginClick()}
             />
 
           </View>
 
-          { /*Footer/error message view*/ }
-          <View style={{flex: 1}}>
+          { /* Footer/error message view */ }
+          <View style={{ flex: 1 }}>
 
             <Text style={globalStyles.failText}>
-                {this.state.failText}
+              {this.state.failText}
             </Text>
 
           </View>
 
-          <View style={{flex: 1}}>
-            <Pressable style={globalStyles.pressableRegisterGoBackButton}
-                       onPress={() => this.props.navigation.navigate('Register')}>
-              <Text 
-              style={globalStyles.registerGoBackText}>
-                  NO ACCOUNT? REGISTER HERE
+          <View style={{ flex: 1 }}>
+            <Pressable
+              style={globalStyles.pressableRegisterGoBackButton}
+              onPress={() => this.props.navigation.navigate('Register')}
+            >
+              <Text style={globalStyles.registerGoBackText}>
+                NO ACCOUNT? REGISTER HERE
               </Text>
             </Pressable>
           </View>
@@ -188,10 +214,9 @@ class LoginScreen extends Component {
       </View>
 
     );
+
   }
+
 }
 
-const styles = StyleSheet.create({
-})
-
-export default LoginScreen
+export default LoginScreen;

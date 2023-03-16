@@ -1,16 +1,10 @@
-'use strict';
-
 import React, { Component } from 'react';
 import StackNavigator from './navigation/main-stack-navigator';
 
 class App extends Component {
-
-  render () {
-
+  render() {
     return (
-      
       <StackNavigator />
-      
     );
   }
 }
