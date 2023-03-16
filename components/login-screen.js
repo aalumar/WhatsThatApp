@@ -90,11 +90,14 @@ class LoginScreen extends Component {
 
         if (status === 200) {
 
+          // error when remove the declaration below
           const rJson = response.json()
 
+            // .then() statement below is the correct one but throws error
+            // .then(async (rJson) => {
             .then(async () => {
 
-              // console.log(rJson);
+              console.log(rJson.id);
 
               try {
 
@@ -168,7 +171,7 @@ class LoginScreen extends Component {
                 style={globalStyles.textInput}
                 placeholder="Email..."
                 value={this.state.email}
-                onChangeText={(email) => this.setState({ email })}
+                onChangeText={(email) => { return this.setState({ email }); }}
               />
 
               <TextInput
@@ -176,7 +179,7 @@ class LoginScreen extends Component {
                 placeholder="Password..."
                 secureTextEntry
                 value={this.state.password}
-                onChangeText={(password) => this.setState({ password })}
+                onChangeText={(password) => { return this.setState({ password }); }}
               />
 
             </View>
@@ -184,7 +187,7 @@ class LoginScreen extends Component {
             <Button
               color="#2a363b"
               title="Log in"
-              onPress={() => this.loginClick()}
+              onPress={() => { return this.loginClick(); }}
             />
 
           </View>
@@ -201,7 +204,7 @@ class LoginScreen extends Component {
           <View style={{ flex: 1 }}>
             <Pressable
               style={globalStyles.pressableRegisterGoBackButton}
-              onPress={() => this.props.navigation.navigate('Register')}
+              onPress={() => { return this.props.navigation.navigate('Register'); }}
             >
               <Text style={globalStyles.registerGoBackText}>
                 NO ACCOUNT? REGISTER HERE

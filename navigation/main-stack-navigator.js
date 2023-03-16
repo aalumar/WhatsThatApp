@@ -9,26 +9,28 @@ import ChatStackNavigator from './chat-stack-navigator';
 
 class StackNavigator extends Component {
 
-    render () {
+  render() {
 
-        const Stack = createNativeStackNavigator();
-    
-        return (
+    const Stack = createNativeStackNavigator();
 
-            <NavigationContainer>
-    
-                <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
+    return (
 
-                    <Stack.Screen name='Login' component={LoginScreen} />
-                    <Stack.Screen name='Register' component={RegisterScreen} />
-                    <Stack.Screen name='Chats' component={ChatStackNavigator} />
-                
-                </Stack.Navigator>
-    
-            </NavigationContainer>
-          
-        );
-      }
+      <NavigationContainer>
+
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Chats" component={ChatStackNavigator} />
+
+        </Stack.Navigator>
+
+      </NavigationContainer>
+
+    );
+
+  }
+
 }
 
-export default StackNavigator
+export default StackNavigator;

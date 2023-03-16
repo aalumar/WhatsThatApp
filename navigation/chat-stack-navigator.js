@@ -7,23 +7,23 @@ import IndividualChat from '../components/individual-chat-screen';
 
 class ChatStackNavigator extends Component {
 
-    render () {
+  render() {
 
-        const Stack = createNativeStackNavigator();
-    
-        return (
+    const Stack = createNativeStackNavigator();
 
-    
-            <Stack.Navigator initialRouteName='Chats'>
-                
-                <Stack.Screen name='Chats' component={TabNavigator} options={{headerShown: false}}/>
-                <Stack.Screen name='IndividualChat' component={IndividualChat} />
-            
-            </Stack.Navigator>
-    
-          
-        );
-      }
+    return (
+
+      <Stack.Navigator initialRouteName="Chats">
+
+        <Stack.Screen name="Chats" component={TabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="IndividualChat" component={IndividualChat} />
+
+      </Stack.Navigator>
+
+    );
+
+  }
+
 }
 
-export default ChatStackNavigator
+export default ChatStackNavigator;

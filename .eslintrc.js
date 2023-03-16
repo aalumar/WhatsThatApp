@@ -9,6 +9,7 @@ module.exports = {
     requireConfigFile: false,
     ecmaVersion: 2018,
     babelOptions: {
+      // presets: ['@babel/preset-react'],
       parserOpts: {
         plugins: ['jsx']
       }
@@ -33,7 +34,8 @@ module.exports = {
     'react/prop-types': 0,
     'no-use-before-define': 0,
     'arrow-body-style': ['error', 'always'],
-    'no-console': 0
+    'no-console': 0,
+    'prefer-template': 0
   }
 
 };

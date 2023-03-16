@@ -2,7 +2,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
 import PreviewChat from './preview-chat-component';
 
 class ChatsScreen extends Component {
@@ -15,96 +15,120 @@ class ChatsScreen extends Component {
 
       isLoading: true,
       chatList: []
-      
+
     };
 
   }
 
   componentDidMount() {
+
     // check user is logged in
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.checkLoggedIn()
-    })
 
-    this.getChats()
+      this.checkLoggedIn();
+
+    });
+
+    this.getChats();
+
   }
 
   componentWillUnmount() {
+
     // close listener to avoid memory leakage
-    this.unsubscribe()
+    this.unsubscribe();
+
   }
 
   // function to check if the user is logged in, otherwise send them back to the login page
   checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('whatsthat_session_token')
+
+    const value = await AsyncStorage.getItem('whatsthat_session_token');
     if (value == null) {
-      this.props.navigation.navigate('Login')
+
+      this.props.navigation.navigate('Login');
+
     }
-  }
+
+  };
 
   getChats = async () => {
 
-    return fetch("http://localhost:3333/api/1.0.0/chat", {
+    const xAuth = await AsyncStorage.getItem('whatsthat_session_token');
+    console.log(xAuth);
+
+    return fetch('http://localhost:3333/api/1.0.0/chat', {
       headers: {
-        "X-Authorization": await AsyncStorage.getItem('whatsthat_session_token')
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       }
     })
-    .then((response) => response.json())
-    .then((responseJson) => {
+      .then((response) => { return response.json(); })
+      .then((responseJson) => {
 
-      this.setState({
-        isLoading: false,
-        chatList: responseJson
+        this.setState({
+          isLoading: false,
+          chatList: responseJson
+        });
+
+        console.log(this.state.chatList);
+
       })
-      console.log(this.state.chatList)
-    })
     // Add error message here
-    .catch((error) => {
-      console.log(error)
-    })
+      .catch((error) => {
 
-  }
+        console.log(error);
 
-  render () {
+      });
 
-    if(this.state.isLoading) {
+  };
+
+  render() {
+
+    if (this.state.isLoading) {
+
       return (
-        <View style={{justifyContent: 'center', alignContent: 'center'}}>
+        <View style={{ justifyContent: 'center', alignContent: 'center' }}>
           <ActivityIndicator />
         </View>
-      )
+      );
+
     }
 
-    else{
-      return (
+    return (
 
-        <View style={styles.flatListParentView}>
+      <View style={styles.flatListParentView}>
 
-          <FlatList
+        <FlatList
           data={this.state.chatList}
-          renderItem={({item}) =>
+          renderItem={({ item }) => {
 
-            // passing the chat's ID to the IndividualChat screen (so we can get the messages)
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('IndividualChat', {
-              chatID: item.chat_id,
-              chatName: item.name}
-              )}>
+            // passing the chat's ID and name to the IndividualChat screen (so we can get the messages)
+            return (
+              <TouchableOpacity onPress={() => {
 
-              { console.log(item.chat_id) }
-              <PreviewChat name={item.name} lastMessage={item.last_message.message}/>
+                return this.props.navigation.navigate('IndividualChat', { chatID: item.chat_id,
+                  chatName: item.name });
 
-            </TouchableOpacity>
-          }
+              }}
+              >
 
-          keyExtractor = {({id}, index) => id}
+                { console.log(item.chat_id) }
+                <PreviewChat name={item.name} lastMessage={item.last_message.message} />
 
-          />
+              </TouchableOpacity>
+            );
 
-        </View>
+          }}
+          keyExtractor={({ id }) => { return id; }}
 
-      )
-    }
+        />
+
+      </View>
+
+    );
+
   }
+
 }
 
 const styles = StyleSheet.create({
@@ -114,6 +138,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#99b898'
   }
 
-})
+});
 
-export default ChatsScreen
+export default ChatsScreen;

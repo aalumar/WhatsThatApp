@@ -1,10 +1,9 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Text, View, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
-import Contacts from './contacts-component';
+import { View, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import globalStyles from '../styles/global';
+import Contacts from './contacts-component';
 
 class ContactsScreen extends Component {
 
@@ -16,88 +15,106 @@ class ContactsScreen extends Component {
 
       isLoading: true,
       contactsList: []
-      
+
     };
 
   }
 
   componentDidMount() {
+
     // check user is logged in
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.checkLoggedIn()
-    })
 
-    this.getContacts()
+      this.checkLoggedIn();
+
+    });
+
+    this.getContacts();
+
   }
 
   componentWillUnmount() {
+
     // close listener to avoid memory leakage
-    this.unsubscribe()
+    this.unsubscribe();
+
   }
 
   // function to check if the user is logged in, otherwise send them back to the login page
   checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('whatsthat_session_token')
+
+    const value = await AsyncStorage.getItem('whatsthat_session_token');
     if (value == null) {
-      this.props.navigation.navigate('Login')
+
+      this.props.navigation.navigate('Login');
+
     }
-  }
+
+  };
 
   getContacts = async () => {
 
-    return fetch("http://localhost:3333/api/1.0.0/contacts", {
+    return fetch('http://localhost:3333/api/1.0.0/contacts', {
       headers: {
-        "X-Authorization": await AsyncStorage.getItem('whatsthat_session_token')
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       }
     })
-    .then((response) => response.json())
-    .then((responseJson) => {
+      .then((response) => { return response.json(); })
+      .then((responseJson) => {
 
-      this.setState({
-        isLoading: false,
-        contactsList: responseJson
+        this.setState({
+          isLoading: false,
+          contactsList: responseJson
+        });
+        console.log(this.state.contactsList);
+
       })
-      console.log(this.state.contactsList)
-    })
+
     // Add error message here
-    .catch((error) => {
-      console.log(error)
-    })
+      .catch((error) => {
 
-  }
+        console.log(error);
 
-  render () {
+      });
 
-    if(this.state.isLoading) {
+  };
+
+  render() {
+
+    if (this.state.isLoading) {
+
       return (
-        <View style={{justifyContent: 'center', alignContent: 'center'}}>
+        <View style={{ justifyContent: 'center', alignContent: 'center' }}>
           <ActivityIndicator />
         </View>
-      )
+      );
+
     }
 
-    else{
-      return (
+    return (
 
-        <View style={styles.flatListParentView}>
+      <View style={styles.flatListParentView}>
 
-          <FlatList
+        <FlatList
           data={this.state.contactsList}
-          renderItem={({item}) =>
+          renderItem={({ item }) => {
 
-            <Contacts name={item.first_name + " " + item.last_name}/>
+            return (
 
-          }
+              <Contacts name={item.first_name + ' ' + item.last_name} />
+            );
 
-          keyExtractor = {({id}, index) => id}
+          }}
+          keyExtractor={({ id }) => { return id; }}
 
-          />
+        />
 
-        </View>
+      </View>
 
-      )
-    }
+    );
+
   }
+
 }
 
 const styles = StyleSheet.create({
@@ -105,6 +122,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#99b898'
   }
-})
+});
 
-export default ContactsScreen
+export default ContactsScreen;
