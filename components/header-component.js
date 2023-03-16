@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, TouchableHighlight, Modal, TextInput, Button, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Modal, TextInput, Button, TouchableWithoutFeedback } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, renderers } from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,51 +16,64 @@ class Header extends Component {
 
       modalVisible: false,
       addFriendSearch: ''
-      
+
     };
 
   }
 
   setModalVisibleState = (visible) => {
-    this.setState({ 
+
+    this.setState({
       modalVisible: visible,
       addFriendSearch: ''
-     });
-  }
+    });
+
+  };
 
   Logout = async () => {
 
-    return fetch("http://localhost:3333/api/1.0.0/logout", {
+    return fetch('http://localhost:3333/api/1.0.0/logout', {
       headers: {
-        "X-Authorization": await AsyncStorage.getItem('whatsthat_session_token')
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       },
-      method: 'post',
+      method: 'post'
     })
-    .then(response => {
+      .then((response) => {
 
-      const status = response.status
-      console.log(status)
+        const status = response.status;
+        // console.log(status);
 
-      if (status === 200) {
-        this.props.navigation.reset({ 
-          routes:[{name: 'Login'}]
-         })
-      }
-      else if(status === 401) {
-        throw "Email or password is invalid."
-      }
-      else {
-        throw "There is a problem on our side. Please try again in a bit."
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-      // this.setState({failText: error})
-    })
+        if (status === 200) {
 
-  }
+          this.props.navigation.reset({
 
-  render () {
+            routes: [{ name: 'Login' }]
+
+          });
+
+        }
+        else if (status === 401) {
+
+          throw 'Email or password is invalid.';
+
+        }
+        else {
+
+          throw 'There is a problem on our side. Please try again in a bit.';
+
+        }
+
+      })
+      .catch((error) => {
+
+        console.log(error);
+        // this.setState({failText: error})
+
+      });
+
+  };
+
+  render() {
 
     const { SlideInMenu } = renderers;
 
@@ -68,24 +81,27 @@ class Header extends Component {
 
       <View style={styles.container}>
 
-        <TouchableOpacity> 
+        <TouchableOpacity>
           <Ionicons name="search-outline" size={28} color="#ffffff" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => {this.setModalVisibleState(true)}}>
+        <TouchableOpacity onPress={() => { this.setModalVisibleState(true); }}>
           <Ionicons name="add-outline" size={28} color="#ffffff" style={styles.icon} />
         </TouchableOpacity>
 
-        {/*TouchableWithoutFeedback is used twice here, the first is to close the Modal when clicking outside of it
-          The second prevents the Modal from closing when clicking inside of it*/}
-        <TouchableWithoutFeedback onPress={() => this.setModalVisibleState(!this.state.modalVisible)}>
+        {/* TouchableWithoutFeedback is used twice here, the first is to close the Modal when clicking outside of it
+          The second prevents the Modal from closing when clicking inside of it */}
+        <TouchableWithoutFeedback onPress={() => { return this.setModalVisibleState(!this.state.modalVisible); }}>
           <Modal
             animationType="fade"
-            transparent={true}
+            transparent
             visible={this.state.modalVisible}
             onRequestClose={() => {
-              this.setModalVisibleState(!this.state.modalVisible)
-            }}>
+
+              this.setModalVisibleState(!this.state.modalVisible);
+
+            }}
+          >
             <View style={styles.modalContainer}>
               <TouchableWithoutFeedback>
                 <View style={styles.innerContainer}>
@@ -93,10 +109,10 @@ class Header extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter friend's email address"
-                    onChangeText={(addFriendSearch) => this.setState({addFriendSearch})}
+                    onChangeText={(addFriendSearch) => { return this.setState({ addFriendSearch }); }}
                     value={this.state.addFriendSearch}
                   />
-                  
+
                   {/* <TouchableHighlight
                     style={styles.button}
                     onPress={() => this.findFriend()}>
@@ -105,12 +121,12 @@ class Header extends Component {
 
                   </TouchableHighlight> */}
 
-                  <Button 
-                    color='#2a363b'
-                    title = "SEND"
-                    onPress = {() => this.findFriend()}
+                  <Button
+                    color="#2a363b"
+                    title="SEND"
+                    onPress={() => { return this.findFriend(); }}
                   />
-                  
+
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -125,19 +141,21 @@ class Header extends Component {
               </MenuTrigger>
 
               <MenuOptions>
-                <MenuOption text="View blocked users"/>
-                <MenuOption onSelect={() => this.Logout()}>
-                  <Text style={{color: 'red'}}> Logout </Text>
+                <MenuOption text="View blocked users" />
+                <MenuOption onSelect={() => { return this.Logout(); }}>
+                  <Text style={{ color: 'red' }}> Logout </Text>
                 </MenuOption>
               </MenuOptions>
             </Menu>
           </MenuProvider>
         </TouchableOpacity>
-        
+
       </View>
 
-    )
+    );
+
   }
+
 }
 
 const styles = StyleSheet.create({
@@ -146,8 +164,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     padding: 8,
-    backgroundColor: '#2a363b',
-    },
+    backgroundColor: '#2a363b'
+  },
 
   icon: {
     marginLeft: 20
@@ -156,7 +174,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
 
   innerContainer: {
@@ -164,19 +182,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
-    marginHorizontal: 20,
+    marginHorizontal: 20
   },
 
   closeButton: {
     alignSelf: 'flex-end',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
 
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 10
   },
 
   input: {
@@ -186,21 +204,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginBottom: 10,
-    width: '100%',
+    width: '100%'
   },
 
   button: {
     backgroundColor: '#2a363b',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5,
+    borderRadius: 5
   },
 
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   }
 
-})
+});
 
-export default Header
+export default Header;

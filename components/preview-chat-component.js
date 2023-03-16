@@ -2,35 +2,40 @@
 
 import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet } from 'react-native';
-import globalStyles from '../styles/global';
 
 class PreviewChat extends Component {
 
-  render () {
+  render() {
 
-    const {image, name, lastMessage} = this.props
+    const { image, name, lastMessage } = this.props;
 
     return (
 
       <View style={styles.container}>
 
-        <Image 
-          src={{uri: image}}
+        <Image
+          src={{ uri: image }}
           defaultSource={require('./whatsthatlogo.png')}
           style={styles.image}
         />
 
         <View style={styles.detailsContainer}>
 
-          <Text style={styles.name}> {name} </Text>
-          <Text style={styles.lastMessage}> {lastMessage} </Text>
+          <Text style={styles.name}>
+            {name}
+          </Text>
+          <Text style={styles.lastMessage}>
+            {lastMessage}
+          </Text>
 
         </View>
 
       </View>
 
-    )
+    );
+
   }
+
 }
 
 const styles = StyleSheet.create({
@@ -63,6 +68,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#ffffff'
   }
-})
+});
 
-export default PreviewChat
+export default PreviewChat;

@@ -5,44 +5,50 @@ import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 class Profile extends Component {
 
-    render () {
+  render() {
 
-        const {image, name, email} = this.props
+    const { image, name, email } = this.props;
 
-        return (
+    return (
 
-        <View style={styles.container}>
+      <View style={styles.container}>
 
-            <View style={{flex: 2, justifyContent: 'center'}}>
+        <View style={{ flex: 2, justifyContent: 'center' }}>
 
-                <TouchableOpacity style={{flex: 1}}>
-                  <Image 
-                    src={{uri: image}}
-                    defaultSource={require('./whatsthatlogo.png')}
-                    style={styles.image}
-                  />
-                </TouchableOpacity>
-
-            </View>
-
-            <View style={{flex: 2}}>
-
-                <View style={{marginBottom: '10%'}}>
-                    <Text style={styles.textTitle}> Name </Text>
-                    <Text style={styles.name}> {name} </Text>
-                </View>
-
-                <View>
-                    <Text style={styles.textTitle}> Email </Text>
-                    <Text style={styles.name}> {email} </Text>
-                </View>
-
-            </View>
+          <TouchableOpacity style={{ flex: 1 }}>
+            <Image
+              src={{ uri: image }}
+              defaultSource={require('./whatsthatlogo.png')}
+              style={styles.image}
+            />
+          </TouchableOpacity>
 
         </View>
 
-        )
-    }
+        <View style={{ flex: 2 }}>
+
+          <View style={{ marginBottom: '10%' }}>
+            <Text style={styles.textTitle}> Name </Text>
+            <Text style={styles.name}>
+              {name}
+            </Text>
+          </View>
+
+          <View>
+            <Text style={styles.textTitle}> Email </Text>
+            <Text style={styles.name}>
+              {email}
+            </Text>
+          </View>
+
+        </View>
+
+      </View>
+
+    );
+
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -68,6 +74,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#ffffff'
   }
-})
+});
 
-export default Profile
+export default Profile;

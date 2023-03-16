@@ -1,54 +1,58 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger} from 'react-native-popup-menu';
-import globalStyles from '../styles/global';
+import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 class Contacts extends Component {
 
-    render () {
+  render() {
 
-        const {image, name} = this.props
+    const { image, name } = this.props;
 
-        return (
+    return (
 
-        <View style={styles.container}>
+      <View style={styles.container}>
 
-            <View style={{flex: 3, flexDirection: 'row'}}>
+        <View style={{ flex: 3, flexDirection: 'row' }}>
 
-                <Image 
-                    src={{uri: image}}
-                    defaultSource={require('./whatsthatlogo.png')}
-                    style={styles.image}
-                />
+          <Image
+            src={{ uri: image }}
+            defaultSource={require('./whatsthatlogo.png')}
+            style={styles.image}
+          />
 
-                <Text style={styles.name}> {name} </Text>
-
-            </View>
-
-            <View style={{justifyContent: 'flex-end'}}>
-            
-                <MenuProvider style={{flex: 1, paddingTop: 10}}>
-                    <Menu>
-                        <MenuTrigger>
-                            <Ionicons name="ellipsis-vertical-outline" size={24} color="#ffffff" />
-                        </MenuTrigger>
-
-                        <MenuOptions>
-                            <MenuOption text="Delete"/>
-                            <MenuOption text="Block"/>
-                        </MenuOptions>
-                    </Menu>
-                </MenuProvider>
-
-            </View>
+          <Text style={styles.name}>
+            {name}
+          </Text>
 
         </View>
 
-        )
-    }
+        <View style={{ justifyContent: 'flex-end' }}>
+
+          <MenuProvider style={{ flex: 1, paddingTop: 10 }}>
+            <Menu>
+              <MenuTrigger>
+                <Ionicons name="ellipsis-vertical-outline" size={24} color="#ffffff" />
+              </MenuTrigger>
+
+              <MenuOptions>
+                <MenuOption text="Delete" />
+                <MenuOption text="Block" />
+              </MenuOptions>
+
+            </Menu>
+          </MenuProvider>
+
+        </View>
+
+      </View>
+
+    );
+
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -73,6 +77,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff'
   }
-})
+});
 
-export default Contacts
+export default Contacts;
