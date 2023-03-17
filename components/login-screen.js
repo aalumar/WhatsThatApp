@@ -90,31 +90,7 @@ class LoginScreen extends Component {
 
         if (status === 200) {
 
-          // error when remove the declaration below
-          const rJson = response.json()
-
-            // .then() statement below is the correct one but throws error
-            // .then(async (rJson) => {
-            .then(async () => {
-
-              console.log(rJson.id);
-
-              try {
-
-                await AsyncStorage.setItem('whatsthat_user_id', rJson.id);
-                await AsyncStorage.setItem('whatsthat_session_token', rJson.token);
-
-                this.props.navigation.navigate('Chats');
-
-              }
-
-              catch {
-
-                throw 'Please try again later. If problem persists, try clearing your cache.';
-
-              }
-
-            });
+          return response.json();
 
         }
         else if (status === 400) {
@@ -125,6 +101,24 @@ class LoginScreen extends Component {
         else {
 
           throw 'There is a problem on our side. Please try again in a bit.';
+
+        }
+
+      })
+      .then(async (rJson) => {
+
+        try {
+
+          await AsyncStorage.setItem('whatsthat_user_id', rJson.id);
+          await AsyncStorage.setItem('whatsthat_session_token', rJson.token);
+
+          this.props.navigation.navigate('Chats');
+
+        }
+
+        catch {
+
+          throw 'Please try again later. If problem persists, try clearing your cache.';
 
         }
 

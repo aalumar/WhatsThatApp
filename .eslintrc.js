@@ -7,7 +7,7 @@ module.exports = {
   },
   parserOptions: {
     requireConfigFile: false,
-    ecmaVersion: 2018,
+    // ecmaVersion: 2018,
     babelOptions: {
       // presets: ['@babel/preset-react'],
       parserOpts: {
@@ -35,7 +35,8 @@ module.exports = {
     'no-use-before-define': 0,
     'arrow-body-style': ['error', 'always'],
     'no-console': 0,
-    'prefer-template': 0
+    'prefer-template': 0,
+    'no-else-return': ['error', { allowElseIf: true }]
   }
 
 };

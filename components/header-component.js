@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Modal, TextInput, Button, TouchableWithoutFeedback } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, renderers } from 'react-native-popup-menu';
 import { Ionicons } from '@expo/vector-icons';
 
 class Header extends Component {
@@ -14,18 +13,38 @@ class Header extends Component {
 
     this.state = {
 
-      modalVisible: false,
-      addFriendSearch: ''
+      addFriendModal: false,
+      addFriendModalSearch: '',
+      optionsModalVisible: false
 
     };
 
   }
 
-  setModalVisibleState = (visible) => {
+  static renderSeparator = () => {
+
+    <View style={{
+      opacity: 0.1,
+      backgroundColor: '#182E44',
+      height: 1
+    }}
+    />;
+
+  };
+
+  setAddFriendModalVisibleState = (visible) => {
 
     this.setState({
-      modalVisible: visible,
-      addFriendSearch: ''
+      addFriendModal: visible,
+      addFriendModalSearch: ''
+    });
+
+  };
+
+  setOptionsModalVisibleState = (visible) => {
+
+    this.setState({
+      optionsModalVisible: visible
     });
 
   };
@@ -41,9 +60,11 @@ class Header extends Component {
       .then((response) => {
 
         const status = response.status;
-        // console.log(status);
 
         if (status === 200) {
+
+          AsyncStorage.removeItem('whatsthat_user_id');
+          AsyncStorage.removeItem('whatsthat_session_token');
 
           this.props.navigation.reset({
 
@@ -75,30 +96,30 @@ class Header extends Component {
 
   render() {
 
-    const { SlideInMenu } = renderers;
-
     return (
 
       <View style={styles.container}>
 
+        {/* SEARCH */}
         <TouchableOpacity>
           <Ionicons name="search-outline" size={28} color="#ffffff" />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => { this.setModalVisibleState(true); }}>
+        {/* ADD */}
+        <TouchableOpacity onPress={() => { this.setAddFriendModalVisibleState(true); }}>
           <Ionicons name="add-outline" size={28} color="#ffffff" style={styles.icon} />
         </TouchableOpacity>
 
         {/* TouchableWithoutFeedback is used twice here, the first is to close the Modal when clicking outside of it
           The second prevents the Modal from closing when clicking inside of it */}
-        <TouchableWithoutFeedback onPress={() => { return this.setModalVisibleState(!this.state.modalVisible); }}>
+        <TouchableWithoutFeedback onPress={() => { return this.setAddFriendModalVisibleState(!this.state.addFriendModal); }}>
           <Modal
             animationType="fade"
             transparent
-            visible={this.state.modalVisible}
+            visible={this.state.addFriendModal}
             onRequestClose={() => {
 
-              this.setModalVisibleState(!this.state.modalVisible);
+              this.setAddFriendModalVisibleState(!this.state.addFriendModal);
 
             }}
           >
@@ -109,8 +130,8 @@ class Header extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter friend's email address"
-                    onChangeText={(addFriendSearch) => { return this.setState({ addFriendSearch }); }}
-                    value={this.state.addFriendSearch}
+                    onChangeText={(addFriendModalSearch) => { return this.setState({ addFriendModalSearch }); }}
+                    value={this.state.addFriendModalSearch}
                   />
 
                   {/* <TouchableHighlight
@@ -133,22 +154,60 @@ class Header extends Component {
           </Modal>
         </TouchableWithoutFeedback>
 
-        <TouchableOpacity>
-          <MenuProvider>
-            <Menu renderer={SlideInMenu}>
-              <MenuTrigger>
-                <Ionicons name="ellipsis-vertical-outline" size={28} color="#ffffff" style={styles.icon} />
-              </MenuTrigger>
-
-              <MenuOptions>
-                <MenuOption text="View blocked users" />
-                <MenuOption onSelect={() => { return this.Logout(); }}>
-                  <Text style={{ color: 'red' }}> Logout </Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
-          </MenuProvider>
+        {/* OPTIONS */}
+        <TouchableOpacity onPress={() => { this.setOptionsModalVisibleState(true); }}>
+          <Ionicons name="ellipsis-vertical-outline" size={28} color="#ffffff" style={styles.icon} />
         </TouchableOpacity>
+
+        <TouchableWithoutFeedback onPress={() => { return this.setOptionsModalVisibleState(!this.state.optionsModalVisible); }}>
+          <Modal
+            animationType="fade"
+            transparent
+            visible={this.state.optionsModalVisible}
+            onRequestClose={() => {
+
+              this.setOptionsModalVisibleState(!this.state.optionsModalVisible);
+
+            }}
+          >
+            <View style={{ flex: 1, backgroundColor: '#000000AA', justifyContent: 'flex-end' }}>
+              <TouchableWithoutFeedback>
+
+                <View style={{
+                  backgroundColor: '#2a363b',
+                  width: '100%',
+                  height: '15%',
+                  borderRadius: 10,
+                  padding: 10
+                }}
+                >
+
+                  <TouchableOpacity style={styles.optionsView}>
+
+                    <Text style={{ fontSize: 18, color: 'white' }}>
+                      View blocked users
+                    </Text>
+
+                  </TouchableOpacity>
+
+                  <View style={{ borderBottomColor: 'white', borderBottomWidth: 1 }} />
+
+                  <TouchableOpacity
+                    style={{ flex: 1, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                    onPress={() => { this.Logout(); }}
+                  >
+
+                    <Text style={{ fontSize: 18, color: 'red' }}>
+                      Logout
+                    </Text>
+
+                  </TouchableOpacity>
+
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </Modal>
+        </TouchableWithoutFeedback>
 
       </View>
 
@@ -217,6 +276,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold'
+  },
+
+  optionsView: {
+    flex: 1,
+    height: '50%',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 
 });

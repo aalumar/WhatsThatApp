@@ -54,9 +54,6 @@ class ChatsScreen extends Component {
 
   getChats = async () => {
 
-    const xAuth = await AsyncStorage.getItem('whatsthat_session_token');
-    console.log(xAuth);
-
     return fetch('http://localhost:3333/api/1.0.0/chat', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')

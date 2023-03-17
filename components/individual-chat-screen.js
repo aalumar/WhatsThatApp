@@ -1,7 +1,10 @@
+/* eslint-disable camelcase */
+// Disabling due to message_id which is a naming scheme from the API
+
 'use strict';
 
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GiftedChat } from 'react-native-gifted-chat';
 
@@ -14,7 +17,7 @@ class IndividualChat extends Component {
     this.state = {
 
       isLoading: true,
-      messages: [],
+      // messages: [],
       chatDetails: []
 
     };
@@ -23,7 +26,7 @@ class IndividualChat extends Component {
 
   }
 
-  componentDidMount() {
+  async componentDidMount() {
 
     // check user is logged in
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -35,7 +38,7 @@ class IndividualChat extends Component {
     // Updating header title of stack navigator to the chat's name
     this.props.navigation.setOptions({ title: this.props.route.params.chatName });
 
-    this.getMessages();
+    await this.getMessages();
     this.formatMessage();
 
   }
@@ -53,7 +56,7 @@ class IndividualChat extends Component {
 
       return {
 
-        messages: GiftedChat.append(previousState.messages, messages)
+        chatDetails: GiftedChat.append(previousState.chatDetails, messages)
 
       };
 
@@ -86,7 +89,6 @@ class IndividualChat extends Component {
       .then((responseJson) => {
 
         this.setState({
-          isLoading: false,
           chatDetails: responseJson.messages
         });
 
@@ -104,7 +106,6 @@ class IndividualChat extends Component {
 
   formatMessage() {
 
-    console.log(this.state.chatDetails);
     this.state.chatDetails = this.state.chatDetails.map(({ message_id, timestamp, message, author }) => {
 
       return {
@@ -116,21 +117,35 @@ class IndividualChat extends Component {
 
     });
 
+    this.setState({
+      isLoading: false
+    });
+
+    console.log(this.state.chatDetails);
+
   }
 
   render() {
+
+    if (this.state.isLoading) {
+
+      return (
+        <View style={{ justifyContent: 'center', alignContent: 'center' }}>
+          <ActivityIndicator />
+        </View>
+      );
+
+    }
 
     return (
 
       <View style={{ flex: 1 }}>
 
         <GiftedChat
-          messages={this.state.messages}
+          messages={this.state.chatDetails}
           onSend={(messages) => { return this.onSend(messages); }}
-          user={{
-            _id: 1
-          }}
         />
+
       </View>
 
     );
