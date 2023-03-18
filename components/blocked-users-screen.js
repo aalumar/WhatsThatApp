@@ -1,11 +1,11 @@
 'use strict';
 
-import React, { Component } from 'react';
-import { View, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { Component } from 'react';
+import { View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
 import Contacts from './contacts-component';
 
-class ContactsScreen extends Component {
+class BlockedUsersScreen extends Component {
 
   constructor(props) {
 
@@ -14,7 +14,7 @@ class ContactsScreen extends Component {
     this.state = {
 
       isLoading: true,
-      contactsList: []
+      blockedUsersList: []
 
     };
 
@@ -29,7 +29,8 @@ class ContactsScreen extends Component {
 
     });
 
-    this.getContacts();
+    this.getBlocked();
+    this.props.navigation.setOptions({ title: 'Blocked users' });
 
   }
 
@@ -52,9 +53,9 @@ class ContactsScreen extends Component {
 
   };
 
-  getContacts = async () => {
+  getBlocked = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/contacts', {
+    return fetch('http://localhost:3333/api/1.0.0/blocked', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       }
@@ -64,12 +65,12 @@ class ContactsScreen extends Component {
 
         this.setState({
           isLoading: false,
-          contactsList: responseJson
+          blockedUsersList: responseJson
         });
-        console.log(this.state.contactsList);
+
+        console.log(this.state.blockedUsersList);
 
       })
-
     // Add error message here
       .catch((error) => {
 
@@ -96,12 +97,13 @@ class ContactsScreen extends Component {
       <View style={styles.flatListParentView}>
 
         <FlatList
-          data={this.state.contactsList}
+          data={this.state.blockedUsersList}
           renderItem={({ item }) => {
 
             return (
 
-              <Contacts id={item.user_id} name={item.first_name + ' ' + item.last_name} blocked={false} getContactsFunction={this.getContacts} />
+              <Contacts id={item.user_id} name={item.first_name + ' ' + item.last_name} blocked={true} getBlockedFunction={this.getBlocked} />
+
             );
 
           }}
@@ -118,10 +120,12 @@ class ContactsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+
   flatListParentView: {
     flex: 1,
     backgroundColor: '#99b898'
   }
+
 });
 
-export default ContactsScreen;
+export default BlockedUsersScreen;

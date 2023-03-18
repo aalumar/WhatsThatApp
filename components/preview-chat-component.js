@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet } from 'react-native';
+import globalStyles from '../styles/global';
 
 class PreviewChat extends Component {
 
@@ -11,7 +12,7 @@ class PreviewChat extends Component {
 
     return (
 
-      <View style={styles.container}>
+      <View style={[styles.container, globalStyles.darkBackgroundColor]}>
 
         <Image
           src={{ uri: image }}
@@ -42,8 +43,7 @@ const styles = StyleSheet.create({
 
   container: {
     flexDirection: 'row',
-    padding: '5%',
-    backgroundColor: '#2a363b'
+    padding: '5%'
   },
 
   image: {

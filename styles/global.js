@@ -77,6 +77,10 @@ const styles = StyleSheet.create({
 
   helvetica: {
     fontFamily: 'Helvetica'
+  },
+
+  darkBackgroundColor: {
+    backgroundColor: '#2a363b'
   }
 });
 

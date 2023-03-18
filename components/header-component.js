@@ -115,7 +115,7 @@ class Header extends Component {
         <TouchableWithoutFeedback onPress={() => { return this.setAddFriendModalVisibleState(!this.state.addFriendModal); }}>
           <Modal
             animationType="fade"
-            transparent
+            transparent={true}
             visible={this.state.addFriendModal}
             onRequestClose={() => {
 
@@ -162,7 +162,7 @@ class Header extends Component {
         <TouchableWithoutFeedback onPress={() => { return this.setOptionsModalVisibleState(!this.state.optionsModalVisible); }}>
           <Modal
             animationType="fade"
-            transparent
+            transparent={true}
             visible={this.state.optionsModalVisible}
             onRequestClose={() => {
 
@@ -182,15 +182,23 @@ class Header extends Component {
                 }}
                 >
 
-                  <TouchableOpacity style={styles.optionsView}>
+                  <TouchableOpacity
+                    style={styles.optionsView}
+                    onPress={() => {
 
-                    <Text style={{ fontSize: 18, color: 'white' }}>
+                      this.props.navigation.navigate('BlockedUsers');
+                      this.setOptionsModalVisibleState(!this.state.optionsModalVisible);
+
+                    }}
+                  >
+
+                    <Text style={{ fontSize: 18, color: '#ffffff' }}>
                       View blocked users
                     </Text>
 
                   </TouchableOpacity>
 
-                  <View style={{ borderBottomColor: 'white', borderBottomWidth: 1 }} />
+                  <View style={{ borderBottomColor: '#ffffff', borderBottomWidth: 1 }} />
 
                   <TouchableOpacity
                     style={{ flex: 1, height: 50, justifyContent: 'center', alignItems: 'center' }}
@@ -274,7 +282,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontWeight: 'bold'
   },
 
