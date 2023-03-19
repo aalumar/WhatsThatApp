@@ -171,7 +171,7 @@ class LoginScreen extends Component {
               <TextInput
                 style={globalStyles.textInput}
                 placeholder="Password..."
-                secureTextEntry
+                secureTextEntry={true}
                 value={this.state.password}
                 onChangeText={(password) => { return this.setState({ password }); }}
               />

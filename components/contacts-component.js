@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
-// import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 
 class Contacts extends Component {
 
@@ -30,7 +29,6 @@ class Contacts extends Component {
 
   removeContact = async () => {
 
-    console.log(this.props.id);
     return fetch('http://localhost:3333/api/1.0.0/user/' + this.props.id + '/contact', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')

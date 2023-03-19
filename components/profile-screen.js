@@ -15,7 +15,8 @@ class ProfileScreen extends Component {
     this.state = {
 
       isLoading: true,
-      userProfile: {}
+      userProfile: {},
+      userProfileImage: null
 
     };
 
@@ -30,6 +31,7 @@ class ProfileScreen extends Component {
 
     });
 
+    this.getProfileImage();
     this.getProfile();
 
   }
@@ -82,6 +84,36 @@ class ProfileScreen extends Component {
 
   };
 
+  getProfileImage = async () => {
+
+    const id = await AsyncStorage.getItem('whatsthat_user_id');
+
+    return fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+      }
+    })
+      .then((response) => { return response.blob(); })
+      .then((responseBlob) => {
+
+        const data = URL.createObjectURL(responseBlob);
+
+        this.setState({
+          userProfileImage: data
+        });
+
+        console.log(this.state.userProfileImage);
+
+      })
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+
+      });
+
+  };
+
   render() {
 
     if (this.state.isLoading) {
@@ -98,7 +130,14 @@ class ProfileScreen extends Component {
 
       <View style={globalStyles.flexContainer}>
 
-        <Profile name={this.state.userProfile.first_name + ' ' + this.state.userProfile.last_name} email={this.state.userProfile.email} />
+        <Profile
+          id={this.state.userProfile.user_id}
+          firstName={this.state.userProfile.first_name}
+          lastName={this.state.userProfile.last_name}
+          email={this.state.userProfile.email}
+          image={this.state.userProfileImage}
+          getProfileFunction={this.getProfile}
+        />
 
       </View>
 

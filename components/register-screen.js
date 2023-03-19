@@ -186,7 +186,7 @@ class RegisterScreen extends Component {
               <TextInput
                 style={globalStyles.textInput}
                 placeholder="Password..."
-                secureTextEntry
+                secureTextEntry={true}
                 value={this.state.password}
                 onChangeText={(password) => { return this.setState({ password }); }}
               />
@@ -194,7 +194,7 @@ class RegisterScreen extends Component {
               <TextInput
                 style={globalStyles.textInput}
                 placeholder="Confirm password..."
-                secureTextEntry
+                secureTextEntry={true}
                 value={this.state.passwordConfirm}
                 onChangeText={(passwordConfirm) => { return this.setState({ passwordConfirm }); }}
               />
