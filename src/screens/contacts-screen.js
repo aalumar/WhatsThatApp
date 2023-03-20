@@ -1,11 +1,11 @@
 'use strict';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
-import Contacts from './contacts-component';
+import { View, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Contacts from '../components/contacts-component';
 
-class BlockedUsersScreen extends Component {
+class ContactsScreen extends Component {
 
   constructor(props) {
 
@@ -14,7 +14,7 @@ class BlockedUsersScreen extends Component {
     this.state = {
 
       isLoading: true,
-      blockedUsersList: []
+      contactsList: []
 
     };
 
@@ -29,8 +29,7 @@ class BlockedUsersScreen extends Component {
 
     });
 
-    this.getBlocked();
-    this.props.navigation.setOptions({ title: 'Blocked users' });
+    this.getContacts();
 
   }
 
@@ -53,9 +52,9 @@ class BlockedUsersScreen extends Component {
 
   };
 
-  getBlocked = async () => {
+  getContacts = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/blocked', {
+    return fetch('http://localhost:3333/api/1.0.0/contacts', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       }
@@ -65,10 +64,35 @@ class BlockedUsersScreen extends Component {
 
         this.setState({
           isLoading: false,
-          blockedUsersList: responseJson
+          contactsList: responseJson
         });
+        console.log(this.state.contactsList);
 
-        console.log(this.state.blockedUsersList);
+      })
+
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+
+      });
+
+  };
+
+  // eslint-disable-next-line class-methods-use-this
+  getProfileImage = async (id) => {
+
+    return fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+      }
+    })
+      .then((response) => { return response.blob(); })
+      .then((responseBlob) => {
+
+        const data = URL.createObjectURL(responseBlob);
+        console.log(data);
+        return data;
 
       })
     // Add error message here
@@ -97,13 +121,18 @@ class BlockedUsersScreen extends Component {
       <View style={styles.flatListParentView}>
 
         <FlatList
-          data={this.state.blockedUsersList}
+          data={this.state.contactsList}
           renderItem={({ item }) => {
 
             return (
 
-              <Contacts id={item.user_id} name={item.first_name + ' ' + item.last_name} blocked={true} getBlockedFunction={this.getBlocked} />
-
+              <Contacts
+                id={item.user_id}
+                name={item.first_name + ' ' + item.last_name}
+                image={this.getProfileImage(item.user_id)}
+                blocked={false}
+                getContactsFunction={this.getContacts}
+              />
             );
 
           }}
@@ -120,12 +149,10 @@ class BlockedUsersScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-
   flatListParentView: {
     flex: 1,
     backgroundColor: '#99b898'
   }
-
 });
 
-export default BlockedUsersScreen;
+export default ContactsScreen;

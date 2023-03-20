@@ -37,7 +37,8 @@ module.exports = {
     'no-console': 0,
     'prefer-template': 0,
     'no-else-return': ['error', { allowElseIf: true }],
-    'react/jsx-boolean-value': ['error', 'always']
+    'react/jsx-boolean-value': ['error', 'always'],
+    'no-unused-expressions': ['error', { allowTernary: true }]
   }
 
 };

@@ -1,11 +1,12 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Contacts from './contacts-component';
+import Profile from '../components/profile-component';
+import globalStyles from '../../styles/global';
 
-class ContactsScreen extends Component {
+class ProfileScreen extends Component {
 
   constructor(props) {
 
@@ -14,7 +15,8 @@ class ContactsScreen extends Component {
     this.state = {
 
       isLoading: true,
-      contactsList: []
+      userProfile: {},
+      userProfileImage: null
 
     };
 
@@ -29,7 +31,8 @@ class ContactsScreen extends Component {
 
     });
 
-    this.getContacts();
+    this.getProfileImage();
+    this.getProfile();
 
   }
 
@@ -52,9 +55,11 @@ class ContactsScreen extends Component {
 
   };
 
-  getContacts = async () => {
+  getProfile = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/contacts', {
+    const id = await AsyncStorage.getItem('whatsthat_user_id');
+
+    return fetch('http://localhost:3333/api/1.0.0/user/' + id, {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       }
@@ -64,12 +69,12 @@ class ContactsScreen extends Component {
 
         this.setState({
           isLoading: false,
-          contactsList: responseJson
+          userProfile: responseJson
         });
-        console.log(this.state.contactsList);
+
+        console.log(this.state.userProfile);
 
       })
-
     // Add error message here
       .catch((error) => {
 
@@ -79,8 +84,9 @@ class ContactsScreen extends Component {
 
   };
 
-  // eslint-disable-next-line class-methods-use-this
-  getProfileImage = async (id) => {
+  getProfileImage = async () => {
+
+    const id = await AsyncStorage.getItem('whatsthat_user_id');
 
     return fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
       headers: {
@@ -91,8 +97,12 @@ class ContactsScreen extends Component {
       .then((responseBlob) => {
 
         const data = URL.createObjectURL(responseBlob);
-        console.log(data);
-        return data;
+
+        this.setState({
+          userProfileImage: data
+        });
+
+        console.log(this.state.userProfileImage);
 
       })
     // Add error message here
@@ -118,26 +128,15 @@ class ContactsScreen extends Component {
 
     return (
 
-      <View style={styles.flatListParentView}>
+      <View style={globalStyles.flexContainer}>
 
-        <FlatList
-          data={this.state.contactsList}
-          renderItem={({ item }) => {
-
-            return (
-
-              <Contacts
-                id={item.user_id}
-                name={item.first_name + ' ' + item.last_name}
-                image={this.getProfileImage(item.user_id)}
-                blocked={false}
-                getContactsFunction={this.getContacts}
-              />
-            );
-
-          }}
-          keyExtractor={({ id }) => { return id; }}
-
+        <Profile
+          id={this.state.userProfile.user_id}
+          firstName={this.state.userProfile.first_name}
+          lastName={this.state.userProfile.last_name}
+          email={this.state.userProfile.email}
+          image={this.state.userProfileImage}
+          getProfileFunction={this.getProfile}
         />
 
       </View>
@@ -148,11 +147,4 @@ class ContactsScreen extends Component {
 
 }
 
-const styles = StyleSheet.create({
-  flatListParentView: {
-    flex: 1,
-    backgroundColor: '#99b898'
-  }
-});
-
-export default ContactsScreen;
+export default ProfileScreen;

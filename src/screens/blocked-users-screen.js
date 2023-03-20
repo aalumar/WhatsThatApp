@@ -2,10 +2,10 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
-import PreviewChat from './preview-chat-component';
+import { View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import Contacts from '../components/contacts-component';
 
-class ChatsScreen extends Component {
+class BlockedUsersScreen extends Component {
 
   constructor(props) {
 
@@ -14,7 +14,7 @@ class ChatsScreen extends Component {
     this.state = {
 
       isLoading: true,
-      chatList: []
+      blockedUsersList: []
 
     };
 
@@ -29,7 +29,8 @@ class ChatsScreen extends Component {
 
     });
 
-    this.getChats();
+    this.getBlocked();
+    this.props.navigation.setOptions({ title: 'Blocked users' });
 
   }
 
@@ -52,9 +53,9 @@ class ChatsScreen extends Component {
 
   };
 
-  getChats = async () => {
+  getBlocked = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/chat', {
+    return fetch('http://localhost:3333/api/1.0.0/blocked', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       }
@@ -64,10 +65,10 @@ class ChatsScreen extends Component {
 
         this.setState({
           isLoading: false,
-          chatList: responseJson
+          blockedUsersList: responseJson
         });
 
-        console.log(this.state.chatList);
+        console.log(this.state.blockedUsersList);
 
       })
     // Add error message here
@@ -96,23 +97,13 @@ class ChatsScreen extends Component {
       <View style={styles.flatListParentView}>
 
         <FlatList
-          data={this.state.chatList}
+          data={this.state.blockedUsersList}
           renderItem={({ item }) => {
 
-            // passing the chat's ID and name to the IndividualChat screen (so we can get the messages)
             return (
-              <TouchableOpacity onPress={() => {
 
-                return this.props.navigation.navigate('IndividualChat', { chatID: item.chat_id,
-                  chatName: item.name });
+              <Contacts id={item.user_id} name={item.first_name + ' ' + item.last_name} blocked={true} getBlockedFunction={this.getBlocked} />
 
-              }}
-              >
-
-                { console.log(item.chat_id) }
-                <PreviewChat name={item.name} lastMessage={item.last_message.message} />
-
-              </TouchableOpacity>
             );
 
           }}
@@ -137,4 +128,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default ChatsScreen;
+export default BlockedUsersScreen;

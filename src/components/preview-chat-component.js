@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet } from 'react-native';
-import globalStyles from '../styles/global';
+import globalStyles from '../../styles/global';
 
 class PreviewChat extends Component {
 
@@ -16,7 +16,7 @@ class PreviewChat extends Component {
 
         <Image
           src={{ uri: image }}
-          defaultSource={require('./whatsthatlogo.png')}
+          defaultSource={require('../whatsthatlogo.png')}
           style={styles.image}
         />
 

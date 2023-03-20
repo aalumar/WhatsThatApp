@@ -3,8 +3,8 @@
 import React, { Component } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './tab-navigator';
-import IndividualChat from '../components/individual-chat-screen';
-import BlockedUsersScreen from '../components/blocked-users-screen';
+import IndividualChat from '../src/screens/individual-chat-screen';
+import BlockedUsersScreen from '../src/screens/blocked-users-screen';
 
 class ChatStackNavigator extends Component {
 

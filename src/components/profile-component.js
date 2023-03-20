@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import globalStyles from '../styles/global';
+import globalStyles from '../../styles/global';
 
 const validator = require('email-validator');
 
@@ -84,6 +84,8 @@ class Profile extends Component {
 
     console.log(updatedUserData);
 
+    const id = await AsyncStorage.getItem('whatsthat_user_id');
+
     return fetch('http://localhost:3333/api/1.0.0/user/' + id, {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
@@ -131,7 +133,7 @@ class Profile extends Component {
             {console.log(this.props.image)}
             <Image
               src={{ uri: this.props.image }}
-              defaultSource={require('./whatsthatlogo.png')}
+              defaultSource={require('../whatsthatlogo.png')}
               style={styles.image}
             />
           </TouchableOpacity>

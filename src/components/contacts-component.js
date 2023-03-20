@@ -141,7 +141,7 @@ class Contacts extends Component {
 
           <Image
             src={{ uri: image }}
-            defaultSource={require('./whatsthatlogo.png')}
+            defaultSource={require('../whatsthatlogo.png')}
             style={styles.image}
           />
 
@@ -203,7 +203,7 @@ class Contacts extends Component {
                       this.setModalVisibleState(!this.state.modalVisible);
                       blocked
                         ? this.unblockContact()
-                        : this.blockContact()
+                        : this.blockContact();
 
                     }}
                   >
