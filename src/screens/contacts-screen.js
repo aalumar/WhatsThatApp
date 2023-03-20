@@ -66,7 +66,6 @@ class ContactsScreen extends Component {
           isLoading: false,
           contactsList: responseJson
         });
-        console.log(this.state.contactsList);
 
       })
 

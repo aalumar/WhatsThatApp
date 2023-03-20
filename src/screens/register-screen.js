@@ -108,7 +108,6 @@ class RegisterScreen extends Component {
       .then((response) => {
 
         const status = response.status;
-        console.log(status);
 
         if (status === 201) {
 

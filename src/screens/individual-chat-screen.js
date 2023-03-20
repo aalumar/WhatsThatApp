@@ -103,8 +103,6 @@ class IndividualChat extends Component {
           chatDetails: responseJson.messages
         });
 
-        console.log(this.state.chatDetails);
-
       })
     // Add error message here
       .catch((error) => {

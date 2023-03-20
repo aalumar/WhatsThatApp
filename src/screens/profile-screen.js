@@ -72,8 +72,6 @@ class ProfileScreen extends Component {
           userProfile: responseJson
         });
 
-        console.log(this.state.userProfile);
-
       })
     // Add error message here
       .catch((error) => {

@@ -67,8 +67,6 @@ class ChatsScreen extends Component {
           chatList: responseJson
         });
 
-        console.log(this.state.chatList);
-
       })
     // Add error message here
       .catch((error) => {
@@ -109,7 +107,6 @@ class ChatsScreen extends Component {
               }}
               >
 
-                { console.log(item.chat_id) }
                 <PreviewChat name={item.name} lastMessage={item.last_message.message} />
 
               </TouchableOpacity>

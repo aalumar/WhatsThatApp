@@ -82,8 +82,6 @@ class Profile extends Component {
       password: this.state.password
     };
 
-    console.log(updatedUserData);
-
     const id = await AsyncStorage.getItem('whatsthat_user_id');
 
     return fetch('http://localhost:3333/api/1.0.0/user/' + id, {
