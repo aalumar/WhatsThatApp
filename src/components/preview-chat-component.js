@@ -16,7 +16,7 @@ class PreviewChat extends Component {
 
         <Image
           src={{ uri: image }}
-          // defaultSource={require('../whatsthatlogo.png')}
+          defaultSource={require('../whatsthatlogo.png')}
           style={styles.image}
         />
 

@@ -128,7 +128,6 @@ class Profile extends Component {
         <View style={{ flex: 2, justifyContent: 'center' }}>
 
           <TouchableOpacity style={{ flex: 1 }}>
-            {console.log(this.props.image)}
             <Image
               src={{ uri: this.props.image }}
               defaultSource={require('../whatsthatlogo.png')}

@@ -100,8 +100,6 @@ class ProfileScreen extends Component {
           userProfileImage: data
         });
 
-        console.log(this.state.userProfileImage);
-
       })
     // Add error message here
       .catch((error) => {

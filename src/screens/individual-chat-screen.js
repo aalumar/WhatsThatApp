@@ -147,8 +147,6 @@ class IndividualChat extends Component {
       chatDetails: transformedMessages
     });
 
-    console.log(this.state.chatDetails);
-
   }
 
   render() {

@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './tab-navigator';
 import IndividualChat from '../src/screens/individual-chat-screen';
 import BlockedUsersScreen from '../src/screens/blocked-users-screen';
+import AddContactScreen from '../src/screens/add-contact-screen';
 
 class ChatStackNavigator extends Component {
 
@@ -30,6 +31,10 @@ class ChatStackNavigator extends Component {
         <Stack.Screen
           name="BlockedUsers"
           component={BlockedUsersScreen}
+        />
+        <Stack.Screen
+          name="AddContact"
+          component={AddContactScreen}
         />
 
       </Stack.Navigator>

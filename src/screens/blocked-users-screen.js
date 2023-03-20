@@ -68,8 +68,6 @@ class BlockedUsersScreen extends Component {
           blockedUsersList: responseJson
         });
 
-        console.log(this.state.blockedUsersList);
-
       })
     // Add error message here
       .catch((error) => {

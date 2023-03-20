@@ -106,7 +106,7 @@ class Header extends Component {
         </TouchableOpacity>
 
         {/* ADD */}
-        <TouchableOpacity onPress={() => { this.setAddFriendModalVisibleState(true); }}>
+        <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddContact'); }}>
           <Ionicons name="add-outline" size={28} color="#ffffff" style={styles.icon} />
         </TouchableOpacity>
 
@@ -129,7 +129,7 @@ class Header extends Component {
                   <Text style={styles.title}>Send a friend request</Text>
                   <TextInput
                     style={styles.input}
-                    placeholder="Enter friend's email address"
+                    placeholder="Enter name or email address"
                     onChangeText={(addFriendModalSearch) => { return this.setState({ addFriendModalSearch }); }}
                     value={this.state.addFriendModalSearch}
                   />
@@ -193,7 +193,7 @@ class Header extends Component {
                   >
 
                     <Text style={{ fontSize: 18, color: '#ffffff' }}>
-                      View blocked users
+                      View blocked contacts
                     </Text>
 
                   </TouchableOpacity>
