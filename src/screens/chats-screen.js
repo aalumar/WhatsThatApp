@@ -2,8 +2,10 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, TouchableOpacity, FlatList, TouchableWithoutFeedback, Modal, Text, TextInput } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import PreviewChat from '../components/preview-chat-component';
+import globalStyles from '../../styles/global';
 
 class ChatsScreen extends Component {
 
@@ -14,7 +16,9 @@ class ChatsScreen extends Component {
     this.state = {
 
       isLoading: true,
-      chatList: []
+      chatList: [],
+      newChatModalVisible: false,
+      chatName: ''
 
     };
 
@@ -28,6 +32,12 @@ class ChatsScreen extends Component {
       this.checkLoggedIn();
 
     });
+
+    this.getChats();
+
+  }
+
+  componentDidUpdate() {
 
     this.getChats();
 
@@ -49,6 +59,14 @@ class ChatsScreen extends Component {
       this.props.navigation.navigate('Login');
 
     }
+
+  };
+
+  setNewChatModalVisibleState = (visible) => {
+
+    this.setState({
+      newChatModalVisible: visible
+    });
 
   };
 
@@ -77,6 +95,111 @@ class ChatsScreen extends Component {
 
   };
 
+  createChat = async () => {
+
+    const chatName = {
+      name: this.state.chatName
+    };
+
+    return fetch('http://localhost:3333/api/1.0.0/chat', {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(chatName)
+    })
+      .then((response) => {
+
+        this.setState({
+          chatName: ''
+        });
+
+        const status = response.status;
+        if (status === 201) {
+
+          throw 'Chat created successfully!';
+
+        }
+        else if (status === 500) {
+
+          throw 'Please try again in a bit.';
+
+        }
+
+      })
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+
+      });
+
+  };
+
+  renderNewChatModal() {
+
+    return (
+      <TouchableWithoutFeedback onPress={() => { return this.setNewChatModalVisibleState(!this.state.newChatModalVisible); }}>
+
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.newChatModalVisible}
+          onRequestClose={() => {
+
+            this.setNewChatModalVisibleState(!this.state.newChatModalVisible);
+
+          }}
+        >
+          <View style={{ flex: 1, backgroundColor: '#000000AA', justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableWithoutFeedback>
+
+              <View style={{
+                backgroundColor: '#2a363b',
+                width: '75%',
+                height: '25%',
+                borderRadius: 10,
+                padding: '5%',
+                alignItems: 'center'
+              }}
+              >
+
+                <View style={{ justifyContent: 'center', alignItems: 'center', fontSize: 20 }}>
+                  <Text style={[globalStyles.bold, { color: '#ffffff' }]}>
+                    Enter your chat's name
+                  </Text>
+                </View>
+
+                <View style={{ marginTop: '10%', marginBottom: '10%' }}>
+                  <TextInput
+                    style={[globalStyles.textInput, { width: '100%', borderColor: '#ffffff', fontStyle: 'normal', color: '#ffffff' }]}
+                    placeholder="Enter name"
+                    onChangeText={(chatName) => { return this.setState({ chatName }); }}
+                    value={this.state.chatName}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={[globalStyles.pressableRegisterGoBackButton, { width: '70%', backgroundColor: '#4e5559' }]}
+                  onPress={() => { this.setNewChatModalVisibleState(!this.state.newChatModalVisible); this.createChat(); }}
+                >
+
+                  <Text style={globalStyles.registerGoBackText}>
+                    CREATE
+                  </Text>
+
+                </TouchableOpacity>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </Modal>
+      </TouchableWithoutFeedback>
+
+    );
+
+  }
+
   render() {
 
     if (this.state.isLoading) {
@@ -95,6 +218,7 @@ class ChatsScreen extends Component {
 
         <FlatList
           data={this.state.chatList}
+          style={{ height: '80%' }}
           renderItem={({ item }) => {
 
             // passing the chat's ID and name to the IndividualChat screen (so we can get the messages)
@@ -117,6 +241,12 @@ class ChatsScreen extends Component {
 
         />
 
+        <TouchableOpacity style={styles.chatIcon} onPress={() => { this.setNewChatModalVisibleState(true); }}>
+          <MaterialIcons name="chat" size={24} color="white" />
+        </TouchableOpacity>
+
+        {this.renderNewChatModal()}
+
       </View>
 
     );
@@ -130,6 +260,17 @@ const styles = StyleSheet.create({
   flatListParentView: {
     flex: 1,
     backgroundColor: '#99b898'
+  },
+  chatIcon: {
+    position: 'absolute',
+    width: '20%',
+    height: '10%',
+    bottom: '3%',
+    right: '5%',
+    borderRadius: '40%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#2a363b'
   }
 
 });

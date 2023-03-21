@@ -14,11 +14,14 @@ class PreviewChat extends Component {
 
       <View style={[styles.container, globalStyles.darkBackgroundColor]}>
 
-        <Image
-          src={{ uri: image }}
-          defaultSource={require('../whatsthatlogo.png')}
-          style={styles.image}
-        />
+        <View style={{ flex: 1, marginRight: '5%' }}>
+          <Image
+            src={{ uri: image }}
+            defaultSource={require('../whatsthatlogo.png')}
+            style={styles.image}
+            resizeMode="contain"
+          />
+        </View>
 
         <View style={styles.detailsContainer}>
 
@@ -47,14 +50,13 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: '12%',
+    width: '100%',
     height: '100%',
-    borderRadius: '10%',
-    marginRight: '5%'
+    borderRadius: '10%'
   },
 
   detailsContainer: {
-    flex: 1
+    flex: 7
   },
 
   name: {
