@@ -30,18 +30,17 @@ class ChatsScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
 
       this.checkLoggedIn();
+      this.getChats();
 
     });
 
-    this.getChats();
-
   }
 
-  componentDidUpdate() {
+  // componentDidUpdate() {
 
-    this.getChats();
+  //   this.getChats();
 
-  }
+  // }
 
   componentWillUnmount() {
 
@@ -231,7 +230,7 @@ class ChatsScreen extends Component {
               }}
               >
 
-                <PreviewChat name={item.name} lastMessage={item.last_message.message} navigation={this.props.navigation} />
+                <PreviewChat id={item.chat_id} name={item.name} lastMessage={item.last_message.message} navigation={this.props.navigation} />
 
               </TouchableOpacity>
             );

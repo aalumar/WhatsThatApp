@@ -36,7 +36,7 @@ class PreviewChat extends Component {
         </View>
 
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => { return this.props.navigation.navigate('AddContact', { addToChat: true }); }}>
+          <TouchableOpacity onPress={() => { return this.props.navigation.navigate('AddContact', { chatID: this.props.id, addToChat: true }); }}>
             <Ionicons name="add-outline" size={22} color="#ffffff" style={styles.icon} />
           </TouchableOpacity>
         </View>

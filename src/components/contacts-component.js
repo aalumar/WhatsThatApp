@@ -219,6 +219,41 @@ class Contacts extends Component {
 
   };
 
+  addContactToChat = async () => {
+
+    return fetch('http://localhost:3333/api/1.0.0/chat/' + this.props.chatID + '/user/' + this.props.id, {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+      },
+      method: 'post'
+    })
+      .then((response) => {
+
+        const status = response.status;
+        if (status === 200) {
+
+          throw 'Contact added to chat successfully!';
+
+        }
+        else if (status === 500) {
+
+          throw 'Please try again in a bit.';
+
+        }
+
+      })
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+        this.setState({
+          userMessage: error
+        });
+
+      });
+
+  };
+
   // eslint-disable-next-line class-methods-use-this
   getProfileImage = async () => {
 
@@ -430,7 +465,15 @@ class Contacts extends Component {
 
         { this.props.addToChat
           ? (
-            <TouchableOpacity style={{ justifyContent: 'flex-end' }} onPress={() => { }}>
+            <TouchableOpacity
+              style={{ justifyContent: 'flex-end' }}
+              onPress={() => {
+
+                this.addContactToChat();
+                this.setAlertUserModalVisibleState(true);
+
+              }}
+            >
               <Ionicons name="add-outline" size={24} color="#ffffff" />
             </TouchableOpacity>
           )
