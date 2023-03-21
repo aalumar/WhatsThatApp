@@ -48,7 +48,7 @@ class Contacts extends Component {
 
   };
 
-  removeContact = async () => {
+  removeContact = async (b) => {
 
     return fetch('http://localhost:3333/api/1.0.0/user/' + this.props.id + '/contact', {
       headers: {
@@ -61,7 +61,18 @@ class Contacts extends Component {
         const status = response.status;
         if (status === 200) {
 
-          this.props.getContactsFunction();
+          // if user is removing a contact on the contacts screen, call getContacts()
+          // otherwise, they are on the blocked screen, so run getBlocked() instead
+          if (!b) {
+
+            this.props.getContactsFunction();
+
+          }
+          else {
+
+            this.props.getBlockedFunction();
+
+          }
           throw 'Contact deleted successfully.';
 
         }
@@ -273,7 +284,7 @@ class Contacts extends Component {
 
                     this.props.add
                       ? this.addContact()
-                      : this.removeContact();
+                      : this.removeContact(this.props.blocked);
                     this.setOptionsModalVisibleState(!this.state.optionsModalVisible);
                     this.setAlertUserModalVisibleState(!this.state.alertUserModalVisible);
 

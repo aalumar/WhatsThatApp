@@ -26,11 +26,10 @@ class BlockedUsersScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
 
       this.checkLoggedIn();
+      this.getBlocked();
+      this.props.navigation.setOptions({ title: 'Blocked users' });
 
     });
-
-    this.getBlocked();
-    this.props.navigation.setOptions({ title: 'Blocked users' });
 
   }
 

@@ -26,10 +26,9 @@ class ContactsScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
 
       this.checkLoggedIn();
+      this.getContacts();
 
     });
-
-    this.getContacts();
 
   }
 
@@ -115,7 +114,7 @@ class ContactsScreen extends Component {
     if (this.state.isLoading) {
 
       return (
-        <View style={{ justifyContent: 'center', alignContent: 'center' }}>
+        <View style={[styles.flatListParentView, { justifyContent: 'center', alignContent: 'center' }]}>
           <ActivityIndicator />
         </View>
       );
