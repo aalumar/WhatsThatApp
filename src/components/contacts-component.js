@@ -428,9 +428,17 @@ class Contacts extends Component {
 
         </View>
 
-        <TouchableOpacity style={{ justifyContent: 'flex-end' }} onPress={() => { this.setOptionsModalVisibleState(true); }}>
-          <Ionicons name="ellipsis-vertical-outline" size={24} color="#ffffff" />
-        </TouchableOpacity>
+        { this.props.addToChat
+          ? (
+            <TouchableOpacity style={{ justifyContent: 'flex-end' }} onPress={() => { }}>
+              <Ionicons name="add-outline" size={24} color="#ffffff" />
+            </TouchableOpacity>
+          )
+          : (
+            <TouchableOpacity style={{ justifyContent: 'flex-end' }} onPress={() => { this.setOptionsModalVisibleState(true); }}>
+              <Ionicons name="ellipsis-vertical-outline" size={24} color="#ffffff" />
+            </TouchableOpacity>
+          )}
 
         { this.renderOptionsModal() }
         { this.renderAlertUserModal() }

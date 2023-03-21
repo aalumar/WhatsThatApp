@@ -1,7 +1,8 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import globalStyles from '../../styles/global';
 
 class PreviewChat extends Component {
@@ -32,6 +33,12 @@ class PreviewChat extends Component {
             {lastMessage}
           </Text>
 
+        </View>
+
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => { return this.props.navigation.navigate('AddContact', { addToChat: true }); }}>
+            <Ionicons name="add-outline" size={22} color="#ffffff" style={styles.icon} />
+          </TouchableOpacity>
         </View>
 
       </View>

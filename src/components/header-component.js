@@ -21,17 +21,6 @@ class Header extends Component {
 
   }
 
-  static renderSeparator = () => {
-
-    <View style={{
-      opacity: 0.1,
-      backgroundColor: '#182E44',
-      height: 1
-    }}
-    />;
-
-  };
-
   setAddFriendModalVisibleState = (visible) => {
 
     this.setState({
@@ -106,7 +95,7 @@ class Header extends Component {
         </TouchableOpacity>
 
         {/* ADD */}
-        <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddContact'); }}>
+        <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddContact', { addToChat: false }); }}>
           <Ionicons name="add-outline" size={28} color="#ffffff" style={styles.icon} />
         </TouchableOpacity>
 
@@ -133,14 +122,6 @@ class Header extends Component {
                     onChangeText={(addFriendModalSearch) => { return this.setState({ addFriendModalSearch }); }}
                     value={this.state.addFriendModalSearch}
                   />
-
-                  {/* <TouchableHighlight
-                    style={styles.button}
-                    onPress={() => this.findFriend()}>
-
-                    <Text style={styles.buttonText}>Send</Text>
-
-                  </TouchableHighlight> */}
 
                   <Button
                     color="#2a363b"

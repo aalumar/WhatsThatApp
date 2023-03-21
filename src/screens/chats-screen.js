@@ -231,7 +231,7 @@ class ChatsScreen extends Component {
               }}
               >
 
-                <PreviewChat name={item.name} lastMessage={item.last_message.message} />
+                <PreviewChat name={item.name} lastMessage={item.last_message.message} navigation={this.props.navigation} />
 
               </TouchableOpacity>
             );

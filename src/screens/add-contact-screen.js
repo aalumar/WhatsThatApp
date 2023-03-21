@@ -121,7 +121,13 @@ class AddContactScreen extends Component {
 
                 return (
 
-                  <Contacts id={item.user_id} name={item.given_name + ' ' + item.family_name} blocked={false} add={true} />
+                  <Contacts
+                    id={item.user_id}
+                    name={item.given_name + ' ' + item.family_name}
+                    blocked={false}
+                    add={true}
+                    addToChat={this.props.route.params.addToChat}
+                  />
 
                 );
 
