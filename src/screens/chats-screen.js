@@ -206,7 +206,7 @@ class ChatsScreen extends Component {
     if (this.state.isLoading) {
 
       return (
-        <View style={{ justifyContent: 'center', alignContent: 'center' }}>
+        <View style={[styles.flatListParentView, { justifyContent: 'center', alignContent: 'center' }]}>
           <ActivityIndicator />
         </View>
       );

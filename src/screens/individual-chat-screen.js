@@ -4,7 +4,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity, Modal, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GiftedChat } from 'react-native-gifted-chat';
 
@@ -17,9 +17,9 @@ class IndividualChat extends Component {
     this.state = {
 
       isLoading: true,
-      // messages: [],
       chatDetails: [],
-      userID: null
+      userID: null,
+      messageLongPressModalVisible: false
 
     };
 
@@ -30,7 +30,7 @@ class IndividualChat extends Component {
   async componentDidMount() {
 
     // check user is logged in
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+    this.unsubscribe = this.props.navigation.addListener('focus', async () => {
 
       this.checkLoggedIn();
 
@@ -39,9 +39,13 @@ class IndividualChat extends Component {
     // Updating header title of stack navigator to the chat's name
     this.props.navigation.setOptions({ title: this.props.route.params.chatName });
 
-    await this.getUserID();
+    if (this.state.userID === null) {
+
+      await this.getUserID();
+
+    }
+
     await this.getMessages();
-    this.formatMessage();
 
   }
 
@@ -52,25 +56,10 @@ class IndividualChat extends Component {
 
   }
 
-  onSend(messages = []) {
+  setMessageLongPressModalVisible = (visible) => {
 
-    this.setState((previousState) => {
-
-      return {
-
-        chatDetails: GiftedChat.append(previousState.chatDetails, messages)
-
-      };
-
-    });
-
-  }
-
-  getUserID = async () => {
-
-    const id = AsyncStorage.getItem('whatsthat_user_id');
     this.setState({
-      userID: id
+      messageLongPressModalVisible: visible
     });
 
   };
@@ -87,6 +76,111 @@ class IndividualChat extends Component {
 
   };
 
+  onSend = async (messages = []) => {
+
+    // eslint-disable-next-line arrow-body-style
+    this.setState((previousState) => ({
+
+      chatDetails: GiftedChat.append(previousState.chatDetails, messages)
+
+    }));
+
+  };
+
+  sendMessage = async (messages = []) => {
+
+    console.log(messages);
+    const chatID = this.props.route.params.chatID;
+    const message = {
+      message: messages[0].text
+    };
+
+    return fetch('http://localhost:3333/api/1.0.0/chat/' + chatID + '/message', {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'post',
+      body: JSON.stringify(message)
+    })
+      .then((response) => {
+
+        const status = response.status;
+        if (status === 200) {
+
+          this.onSend();
+          this.componentDidMount();
+          throw 'Message sent successfully.';
+
+        }
+        else if (status === 500) {
+
+          throw 'Please try again in a bit.';
+
+        }
+
+      })
+
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+
+      });
+
+  };
+
+  deleteMessage = async (message) => {
+
+    const chatID = this.props.route.params.chatID;
+    // eslint-disable-next-line no-underscore-dangle
+    const messageID = message._id;
+
+    return fetch('http://localhost:3333/api/1.0.0/chat/' + chatID + '/message/' + messageID, {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+      },
+      method: 'delete'
+    })
+      .then((response) => {
+
+        const status = response.status;
+        if (status === 200) {
+
+          this.componentDidMount();
+          throw 'Message deleted successfully.';
+
+        }
+        else if (status === 500) {
+
+          throw 'Please try again in a bit.';
+
+        }
+
+      })
+
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+
+      });
+
+  };
+
+  getUserID = async () => {
+
+    AsyncStorage.getItem('whatsthat_user_id').then((id) => {
+
+      this.setState({
+        // string -> int conversion
+        userID: parseInt(id, 10)
+      });
+
+    });
+
+  };
+
   getMessages = async () => {
 
     const chatID = this.props.route.params.chatID;
@@ -99,8 +193,24 @@ class IndividualChat extends Component {
       .then((response) => { return response.json(); })
       .then((responseJson) => {
 
+        const transformedMessages = responseJson.messages.map((message) => {
+
+          return {
+            _id: message.message_id,
+            createdAt: message.timestamp,
+            text: message.message,
+            user: {
+              _id: message.author.user_id,
+              name: message.author.first_name + ' ' + message.author.last_name
+              // avatar: ,
+            }
+          };
+
+        });
+
         this.setState({
-          chatDetails: responseJson.messages
+          isLoading: false,
+          chatDetails: transformedMessages
         });
 
       })
@@ -113,39 +223,99 @@ class IndividualChat extends Component {
 
   };
 
-  formatMessage() {
+  // eslint-disable-next-line class-methods-use-this
+  onLongPress = (context, message) => {
 
-    // eslint-disable-next-line react/no-access-state-in-setstate
-    const transformedMessages = this.state.chatDetails.map((message) => {
+    console.log(context, message);
+    const options = ['Edit', 'Delete'];
+    const deleteButtonIndex = options.length - 1;
 
-      return {
-        _id: message.message_id,
-        createdAt: message.timestamp,
-        text: message.message,
-        user: {
-          _id: message.author.user_id,
-          name: message.author.first_name + ' ' + message.author.last_name
-          // avatar: ,
-        }
-      };
+    context.actionSheet().showActionSheetWithOptions({
+      options,
+      deleteButtonIndex
+    }, (buttonIndex) => {
+
+      switch (buttonIndex) {
+
+        case 0:
+          break;
+
+        case 1:
+          this.deleteMessage(message);
+          break;
+
+        default:
+
+      }
 
     });
 
-    // const transformedMessages = this.state.chatDetails.map(({ message_id, timestamp, message, author }) => {
+  };
 
-    //   return {
-    //     _id: message_id,
-    //     createdAt: timestamp,
-    //     text: message,
-    //     user: author
-    //   };
+  renderMessageLongPress() {
 
-    // });
+    return (
+      <TouchableWithoutFeedback onPress={() => { return this.messageLongPressModalVisible(!this.state.messageLongPressModalVisible); }}>
 
-    this.setState({
-      isLoading: false,
-      chatDetails: transformedMessages
-    });
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.messageLongPressModalVisible}
+          onRequestClose={() => {
+
+            this.messageLongPressModalVisible(!this.state.messageLongPressModalVisible);
+
+          }}
+        >
+          <View style={{ flex: 1, backgroundColor: '#000000AA', justifyContent: 'flex-end' }}>
+            <TouchableWithoutFeedback>
+
+              <View style={{
+                backgroundColor: '#2a363b',
+                width: '100%',
+                height: '15%',
+                borderRadius: 10,
+                padding: 10
+              }}
+              >
+
+                <TouchableOpacity
+                  style={styles.optionsView}
+                  onPress={() => {
+
+                    this.setMessageLongPressModalVisible(!this.state.messageLongPressModalVisible);
+
+                  }}
+                >
+
+                  <Text style={{ fontSize: 18, color: '#ffffff' }}>
+                    Edit
+                  </Text>
+
+                </TouchableOpacity>
+
+                <View style={{ borderBottomColor: '#ffffff', borderBottomWidth: 1 }} />
+
+                <TouchableOpacity
+                  style={{ flex: 1, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                  onPress={() => {
+
+                    this.setMessageLongPressModalVisible(!this.state.messageLongPressModalVisible);
+
+                  }}
+                >
+
+                  <Text style={{ fontSize: 18, color: 'red' }}>
+                    Delete
+                  </Text>
+
+                </TouchableOpacity>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </Modal>
+      </TouchableWithoutFeedback>
+    );
 
   }
 
@@ -154,7 +324,7 @@ class IndividualChat extends Component {
     if (this.state.isLoading) {
 
       return (
-        <View style={{ justifyContent: 'center', alignContent: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignContent: 'center' }}>
           <ActivityIndicator />
         </View>
       );
@@ -165,14 +335,13 @@ class IndividualChat extends Component {
 
       <View style={{ flex: 1 }}>
 
-        {console.log(this.state.userID)}
-
         <GiftedChat
           messages={this.state.chatDetails}
-          onSend={(messages) => { return this.onSend(messages); }}
+          onSend={(messages) => { return this.sendMessage(messages); }}
           user={{
-            _id: 2
+            _id: this.state.userID
           }}
+          onLongPress={this.onLongPress}
         />
 
       </View>
@@ -182,5 +351,14 @@ class IndividualChat extends Component {
   }
 
 }
+
+const styles = StyleSheet.create({
+  optionsView: {
+    flex: 1,
+    height: '50%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
 export default IndividualChat;
