@@ -114,6 +114,8 @@ class ChatsScreen extends Component {
           chatName: ''
         });
 
+        this.getChats();
+
         const status = response.status;
         if (status === 201) {
 
