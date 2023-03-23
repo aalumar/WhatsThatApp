@@ -67,6 +67,14 @@ class ChatsScreen extends Component {
       newChatModalVisible: visible
     });
 
+    if (visible === false) {
+
+      this.setState({
+        chatName: ''
+      });
+
+    }
+
   };
 
   getChats = async () => {
@@ -109,10 +117,6 @@ class ChatsScreen extends Component {
       body: JSON.stringify(chatName)
     })
       .then((response) => {
-
-        this.setState({
-          chatName: ''
-        });
 
         this.getChats();
 
@@ -243,7 +247,7 @@ class ChatsScreen extends Component {
         />
 
         <TouchableOpacity style={styles.chatIcon} onPress={() => { this.setNewChatModalVisibleState(true); }}>
-          <MaterialIcons name="chat" size={24} color="white" />
+          <MaterialIcons name="chat" size={24} color="#000000" />
         </TouchableOpacity>
 
         {this.renderNewChatModal()}
@@ -271,7 +275,7 @@ const styles = StyleSheet.create({
     borderRadius: '40%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2a363b'
+    backgroundColor: '#707070'
   }
 
 });

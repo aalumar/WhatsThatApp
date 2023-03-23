@@ -4,9 +4,10 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity, Modal, Text, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity, Modal, Text, StyleSheet, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GiftedChat } from 'react-native-gifted-chat';
+import globalStyles from '../../styles/global';
 
 class IndividualChat extends Component {
 
@@ -19,6 +20,8 @@ class IndividualChat extends Component {
       isLoading: true,
       chatDetails: [],
       userID: null,
+      selectedMessage: null,
+      updatedMessage: '',
       messageLongPressModalVisible: false
 
     };
@@ -61,6 +64,14 @@ class IndividualChat extends Component {
     this.setState({
       messageLongPressModalVisible: visible
     });
+
+    if (visible === false) {
+
+      this.setState({
+        updatedMessage: ''
+      });
+
+    }
 
   };
 
@@ -168,6 +179,49 @@ class IndividualChat extends Component {
 
   };
 
+  editMessage = async () => {
+
+    const chatID = this.props.route.params.chatID;
+    // eslint-disable-next-line no-underscore-dangle
+    const messageID = this.state.selectedMessage._id;
+    const message = {
+      message: this.state.updatedMessage
+    };
+
+    return fetch('http://localhost:3333/api/1.0.0/chat/' + chatID + '/message/' + messageID, {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+        'Content-Type': 'application/json'
+      },
+      method: 'PATCH',
+      body: JSON.stringify(message)
+    })
+      .then((response) => {
+
+        const status = response.status;
+        if (status === 200) {
+
+          this.componentDidMount();
+          throw 'Message edited successfully.';
+
+        }
+        else if (status === 500) {
+
+          throw 'Please try again in a bit.';
+
+        }
+
+      })
+
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+
+      });
+
+  };
+
   getUserID = async () => {
 
     AsyncStorage.getItem('whatsthat_user_id').then((id) => {
@@ -238,6 +292,8 @@ class IndividualChat extends Component {
       switch (buttonIndex) {
 
         case 0:
+          this.setState({ selectedMessage: message });
+          this.setMessageLongPressModalVisible(true);
           break;
 
         case 1:
@@ -255,7 +311,8 @@ class IndividualChat extends Component {
   renderMessageLongPress() {
 
     return (
-      <TouchableWithoutFeedback onPress={() => { return this.messageLongPressModalVisible(!this.state.messageLongPressModalVisible); }}>
+
+      <TouchableWithoutFeedback onPress={() => { return this.setMessageLongPressModalVisible(!this.state.messageLongPressModalVisible); }}>
 
         <Modal
           animationType="fade"
@@ -263,50 +320,46 @@ class IndividualChat extends Component {
           visible={this.state.messageLongPressModalVisible}
           onRequestClose={() => {
 
-            this.messageLongPressModalVisible(!this.state.messageLongPressModalVisible);
+            this.setMessageLongPressModalVisible(!this.state.messageLongPressModalVisible);
 
           }}
         >
-          <View style={{ flex: 1, backgroundColor: '#000000AA', justifyContent: 'flex-end' }}>
+          <View style={{ flex: 1, backgroundColor: '#000000AA', justifyContent: 'center', alignItems: 'center' }}>
             <TouchableWithoutFeedback>
 
               <View style={{
                 backgroundColor: '#2a363b',
-                width: '100%',
-                height: '15%',
+                width: '75%',
+                height: '25%',
                 borderRadius: 10,
-                padding: 10
+                padding: '5%',
+                alignItems: 'center'
               }}
               >
 
-                <TouchableOpacity
-                  style={styles.optionsView}
-                  onPress={() => {
-
-                    this.setMessageLongPressModalVisible(!this.state.messageLongPressModalVisible);
-
-                  }}
-                >
-
-                  <Text style={{ fontSize: 18, color: '#ffffff' }}>
-                    Edit
+                <View style={{ justifyContent: 'center', alignItems: 'center', fontSize: 20 }}>
+                  <Text style={[globalStyles.bold, { color: '#ffffff' }]}>
+                    Enter the new message
                   </Text>
+                </View>
 
-                </TouchableOpacity>
+                <View style={{ marginTop: '10%', marginBottom: '10%' }}>
+                  <TextInput
+                    style={[globalStyles.textInput, { width: '100%', borderColor: '#ffffff', fontStyle: 'normal', color: '#ffffff' }]}
+                    placeholder="Enter new message"
+                    onChangeText={(updatedMessage) => { return this.setState({ updatedMessage }); }}
+                    value={this.state.updatedMessage}
+                  />
+                </View>
 
-                <View style={{ borderBottomColor: '#ffffff', borderBottomWidth: 1 }} />
-
+                {/* add edit message functions call here */}
                 <TouchableOpacity
-                  style={{ flex: 1, height: 50, justifyContent: 'center', alignItems: 'center' }}
-                  onPress={() => {
-
-                    this.setMessageLongPressModalVisible(!this.state.messageLongPressModalVisible);
-
-                  }}
+                  style={[globalStyles.pressableRegisterGoBackButton, { width: '70%', backgroundColor: '#4e5559' }]}
+                  onPress={() => { this.setMessageLongPressModalVisible(!this.state.messageLongPressModalVisible); this.editMessage(); }}
                 >
 
-                  <Text style={{ fontSize: 18, color: 'red' }}>
-                    Delete
+                  <Text style={globalStyles.registerGoBackText}>
+                    EDIT
                   </Text>
 
                 </TouchableOpacity>
@@ -315,6 +368,7 @@ class IndividualChat extends Component {
           </View>
         </Modal>
       </TouchableWithoutFeedback>
+
     );
 
   }
@@ -344,6 +398,8 @@ class IndividualChat extends Component {
           onLongPress={this.onLongPress}
         />
 
+        {this.renderMessageLongPress()}
+
       </View>
 
     );
@@ -351,14 +407,5 @@ class IndividualChat extends Component {
   }
 
 }
-
-const styles = StyleSheet.create({
-  optionsView: {
-    flex: 1,
-    height: '50%',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});
 
 export default IndividualChat;
