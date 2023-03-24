@@ -66,40 +66,8 @@ class ContactsScreen extends Component {
           contactsList: responseJson
         });
 
-        console.log(this.state.contactsList);
-
       })
 
-    // Add error message here
-      .catch((error) => {
-
-        console.log(error);
-
-      });
-
-  };
-
-  // eslint-disable-next-line class-methods-use-this
-  getProfileImage = async (id) => {
-
-    return fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
-      headers: {
-        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-      }
-    })
-      .then((response) => {
-
-        return response.blob();
-
-      })
-      .then((responseBlob) => {
-
-        const data = URL.createObjectURL(responseBlob);
-        console.log(data);
-
-        return data;
-
-      })
     // Add error message here
       .catch((error) => {
 
@@ -134,7 +102,6 @@ class ContactsScreen extends Component {
               <Contacts
                 id={item.user_id}
                 name={item.first_name + ' ' + item.last_name}
-                // image={this.getProfileImage(item.user_id)}
                 blocked={false}
                 getContactsFunction={this.getContacts}
               />

@@ -28,7 +28,7 @@ class Contacts extends Component {
 
     this.setState({
       userImage: await this.getProfileImage()
-    });
+    }, () => { return console.log(this.state.userImage); });
 
   }
 
@@ -526,7 +526,7 @@ class Contacts extends Component {
 
           <Image
             src={{ uri: this.state.userImage }}
-            defaultSource={require('../whatsthatlogo.png')}
+            // defaultSource={require('../whatsthatlogo.png')}
             style={styles.image}
           />
 
