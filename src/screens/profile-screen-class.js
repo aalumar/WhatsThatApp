@@ -1,49 +1,61 @@
 'use strict';
 
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Profile from '../components/profile-component';
 import globalStyles from '../../styles/global';
 
-function ProfileScreen(props) {
+class ProfileScreen extends Component {
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState();
-  const [userProfileImage, setUserProfileImage] = useState(null);
+  constructor(props) {
 
-  useEffect(() => {
+    super(props);
 
-    const unsubscribe = props.navigation.addListener('focus', () => {
+    this.state = {
 
-      checkLoggedIn();
-
-    });
-
-    getProfileImage();
-    getProfile();
-
-    return () => {
-
-      unsubscribe();
+      isLoading: true,
+      userProfile: {},
+      userProfileImage: null
 
     };
 
-  }, []);
+  }
+
+  componentDidMount() {
+
+    // check user is logged in
+    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+
+      this.checkLoggedIn();
+
+    });
+
+    this.getProfileImage();
+    this.getProfile();
+
+  }
+
+  componentWillUnmount() {
+
+    // close listener to avoid memory leakage
+    this.unsubscribe();
+
+  }
 
   // function to check if the user is logged in, otherwise send them back to the login page
-  const checkLoggedIn = async () => {
+  checkLoggedIn = async () => {
 
     const value = await AsyncStorage.getItem('whatsthat_session_token');
     if (value == null) {
 
-      props.navigation.navigate('Login');
+      this.props.navigation.navigate('Login');
 
     }
 
   };
 
-  const getProfile = async () => {
+  getProfile = async () => {
 
     const id = await AsyncStorage.getItem('whatsthat_user_id');
 
@@ -55,8 +67,10 @@ function ProfileScreen(props) {
       .then((response) => { return response.json(); })
       .then((responseJson) => {
 
-        setUserProfile(responseJson);
-        setIsLoading(false);
+        this.setState({
+          isLoading: false,
+          userProfile: responseJson
+        });
 
       })
     // Add error message here
@@ -68,7 +82,7 @@ function ProfileScreen(props) {
 
   };
 
-  const getProfileImage = async () => {
+  getProfileImage = async () => {
 
     const id = await AsyncStorage.getItem('whatsthat_user_id');
 
@@ -82,7 +96,9 @@ function ProfileScreen(props) {
 
         const data = URL.createObjectURL(responseBlob);
 
-        setUserProfileImage(data);
+        this.setState({
+          userProfileImage: data
+        });
 
       })
     // Add error message here
@@ -94,32 +110,36 @@ function ProfileScreen(props) {
 
   };
 
-  if (isLoading) {
+  render() {
+
+    if (this.state.isLoading) {
+
+      return (
+        <View style={{ justifyContent: 'center', alignContent: 'center' }}>
+          <ActivityIndicator />
+        </View>
+      );
+
+    }
 
     return (
-      <View style={{ justifyContent: 'center', alignContent: 'center' }}>
-        <ActivityIndicator />
+
+      <View style={globalStyles.flexContainer}>
+
+        <Profile
+          id={this.state.userProfile.user_id}
+          firstName={this.state.userProfile.first_name}
+          lastName={this.state.userProfile.last_name}
+          email={this.state.userProfile.email}
+          image={this.state.userProfileImage}
+          getProfileFunction={this.getProfile}
+        />
+
       </View>
+
     );
 
   }
-
-  return (
-
-    <View style={globalStyles.flexContainer}>
-
-      <Profile
-        id={userProfile.user_id}
-        firstName={userProfile.first_name}
-        lastName={userProfile.last_name}
-        email={userProfile.email}
-        image={userProfileImage}
-        getProfileFunction={getProfile}
-      />
-
-    </View>
-
-  );
 
 }
 

@@ -1,22 +1,56 @@
 'use strict';
 
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Modal, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import globalStyles from '../../styles/global';
 
-function Contacts(props) {
+class Contacts extends Component {
 
-  const [optionsModalVisible, setOptionsModalVisibleState] = useState(false);
-  const [alertUserModalVisible, setAlertUserModalVisibleState] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const [userImage, setUserImage] = useState(null);
-  const [userMessage, setUserMessage] = useState('');
+  constructor(props) {
 
-  const removeContact = async (b) => {
+    super(props);
 
-    return fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/contact', {
+    this.state = {
+
+      optionsModalVisible: false,
+      alertUserModalVisible: false,
+      isLoading: true,
+      userImage: null,
+      userMessage: ''
+
+    };
+
+  }
+
+  async componentDidMount() {
+
+    this.setState({
+      userImage: await this.getProfileImage()
+    }, () => { return console.log(this.state.userImage); });
+
+  }
+
+  setOptionsModalVisibleState = (visible) => {
+
+    this.setState({
+      optionsModalVisible: visible
+    });
+
+  };
+
+  setAlertUserModalVisibleState = (visible) => {
+
+    this.setState({
+      alertUserModalVisible: visible
+    });
+
+  };
+
+  removeContact = async (b) => {
+
+    return fetch('http://localhost:3333/api/1.0.0/user/' + this.props.id + '/contact', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       },
@@ -31,12 +65,12 @@ function Contacts(props) {
           // otherwise, they are on the blocked screen, so run getBlocked() instead
           if (!b) {
 
-            props.getContactsFunction();
+            this.props.getContactsFunction();
 
           }
           else {
 
-            props.getBlockedFunction();
+            this.props.getBlockedFunction();
 
           }
           throw 'Contact deleted successfully.';
@@ -59,15 +93,17 @@ function Contacts(props) {
       .catch((error) => {
 
         console.log(error);
-        setUserMessage(error);
+        this.setState({
+          userMessage: error
+        });
 
       });
 
   };
 
-  const blockContact = async () => {
+  blockContact = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/block', {
+    return fetch('http://localhost:3333/api/1.0.0/user/' + this.props.id + '/block', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       },
@@ -78,7 +114,7 @@ function Contacts(props) {
         const status = response.status;
         if (status === 200) {
 
-          props.getContactsFunction();
+          this.props.getContactsFunction();
           throw 'Contact blocked successfully.';
 
         }
@@ -99,15 +135,17 @@ function Contacts(props) {
       .catch((error) => {
 
         console.log(error);
-        setUserMessage(error);
+        this.setState({
+          userMessage: error
+        });
 
       });
 
   };
 
-  const unblockContact = async () => {
+  unblockContact = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/block', {
+    return fetch('http://localhost:3333/api/1.0.0/user/' + this.props.id + '/block', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       },
@@ -118,7 +156,7 @@ function Contacts(props) {
         const status = response.status;
         if (status === 200) {
 
-          props.getBlockedFunction();
+          this.props.getBlockedFunction();
           throw 'Contact unblocked successfully.';
 
         }
@@ -133,15 +171,17 @@ function Contacts(props) {
       .catch((error) => {
 
         console.log(error);
-        setUserMessage(error);
+        this.setState({
+          userMessage: error
+        });
 
       });
 
   };
 
-  const addContact = async () => {
+  addContact = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/contact', {
+    return fetch('http://localhost:3333/api/1.0.0/user/' + this.props.id + '/contact', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       },
@@ -171,15 +211,17 @@ function Contacts(props) {
       .catch((error) => {
 
         console.log(error);
-        setUserMessage(error);
+        this.setState({
+          userMessage: error
+        });
 
       });
 
   };
 
-  const addContactToChat = async () => {
+  addContactToChat = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/chat/' + props.chatID + '/user/' + props.id, {
+    return fetch('http://localhost:3333/api/1.0.0/chat/' + this.props.chatID + '/user/' + this.props.id, {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       },
@@ -204,15 +246,17 @@ function Contacts(props) {
       .catch((error) => {
 
         console.log(error);
-        setUserMessage(error);
+        this.setState({
+          userMessage: error
+        });
 
       });
 
   };
 
-  const removeContactFromChat = async () => {
+  removeContactFromChat = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/chat/' + props.chatID + '/user/' + props.id, {
+    return fetch('http://localhost:3333/api/1.0.0/chat/' + this.props.chatID + '/user/' + this.props.id, {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       },
@@ -237,22 +281,24 @@ function Contacts(props) {
       .catch((error) => {
 
         console.log(error);
-        setUserMessage(error);
+        this.setState({
+          userMessage: error
+        });
 
       });
 
   };
 
-  const getProfileImage = async () => {
+  // eslint-disable-next-line class-methods-use-this
+  getProfileImage = async () => {
 
-    return fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/photo', {
+    return fetch('http://localhost:3333/api/1.0.0/user/' + this.props.id + '/photo', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       }
     })
       .then((response) => {
 
-        console.log(response);
         return response.blob();
 
       })
@@ -260,7 +306,9 @@ function Contacts(props) {
 
         const data = URL.createObjectURL(responseBlob);
 
-        setLoading(false);
+        this.setState({
+          isLoading: false
+        });
         return data;
 
       })
@@ -273,19 +321,19 @@ function Contacts(props) {
 
   };
 
-  const renderAddOrRemoveContact = () => {
+  renderAddOrRemoveContact() {
 
     // render the component with the remove icon if a user exists in the chat
     // otherwise render the plus icon to add them to the chat
-    if (props.userExistsInChat) {
+    if (this.props.userExistsInChat) {
 
       return (
         <TouchableOpacity
           style={{ justifyContent: 'flex-end' }}
           onPress={() => {
 
-            removeContactFromChat();
-            setAlertUserModalVisibleState(true);
+            this.removeContactFromChat();
+            this.setAlertUserModalVisibleState(true);
 
           }}
         >
@@ -300,8 +348,8 @@ function Contacts(props) {
         style={{ justifyContent: 'flex-end' }}
         onPress={() => {
 
-          addContactToChat();
-          setAlertUserModalVisibleState(true);
+          this.addContactToChat();
+          this.setAlertUserModalVisibleState(true);
 
         }}
       >
@@ -309,20 +357,20 @@ function Contacts(props) {
       </TouchableOpacity>
     );
 
-  };
+  }
 
-  const renderOptionsModal = () => {
+  renderOptionsModal() {
 
     return (
-      <TouchableWithoutFeedback onPress={() => { return setOptionsModalVisibleState(!optionsModalVisible); }}>
+      <TouchableWithoutFeedback onPress={() => { return this.setOptionsModalVisibleState(!this.state.optionsModalVisible); }}>
 
         <Modal
           animationType="fade"
           transparent={true}
-          visible={optionsModalVisible}
+          visible={this.state.optionsModalVisible}
           onRequestClose={() => {
 
-            setOptionsModalVisibleState(!optionsModalVisible);
+            this.setOptionsModalVisibleState(!this.state.optionsModalVisible);
 
           }}
         >
@@ -342,15 +390,15 @@ function Contacts(props) {
                   style={styles.optionsView}
                   onPress={() => {
 
-                    props.add
-                      ? addContact()
-                      : removeContact(props.blocked);
-                    setOptionsModalVisibleState(!optionsModalVisible);
-                    setAlertUserModalVisibleState(!alertUserModalVisible);
+                    this.props.add
+                      ? this.addContact()
+                      : this.removeContact(this.props.blocked);
+                    this.setOptionsModalVisibleState(!this.state.optionsModalVisible);
+                    this.setAlertUserModalVisibleState(!this.state.alertUserModalVisible);
 
                   }}
                 >
-                  { props.add
+                  { this.props.add
                     ? (
                       <Text style={{ fontSize: 18, color: '#ffffff' }}>
                         Add contact
@@ -370,16 +418,16 @@ function Contacts(props) {
                   style={styles.optionsView}
                   onPress={() => {
 
-                    props.blocked
-                      ? unblockContact()
-                      : blockContact();
-                    setOptionsModalVisibleState(!optionsModalVisible);
-                    setAlertUserModalVisibleState(!alertUserModalVisible);
+                    this.props.blocked
+                      ? this.unblockContact()
+                      : this.blockContact();
+                    this.setOptionsModalVisibleState(!this.state.optionsModalVisible);
+                    this.setAlertUserModalVisibleState(!this.state.alertUserModalVisible);
 
                   }}
                 >
                   {/* blocked ternary operator, if true then render the component for the blocked user screen */}
-                  { props.blocked
+                  { this.props.blocked
                     ? (
                       <Text style={{ fontSize: 18, color: 'red' }}>
                         Unblock contact
@@ -399,20 +447,20 @@ function Contacts(props) {
       </TouchableWithoutFeedback>
     );
 
-  };
+  }
 
-  const renderAlertUserModal = () => {
+  renderAlertUserModal() {
 
     return (
-      <TouchableWithoutFeedback onPress={() => { return setAlertUserModalVisibleState(!alertUserModalVisible); }}>
+      <TouchableWithoutFeedback onPress={() => { return this.setAlertUserModalVisibleState(!this.state.alertUserModalVisible); }}>
 
         <Modal
           animationType="fade"
           transparent={true}
-          visible={alertUserModalVisible}
+          visible={this.state.alertUserModalVisible}
           onRequestClose={() => {
 
-            setAlertUserModalVisibleState(!alertUserModalVisible);
+            this.setAlertUserModalVisibleState(!this.state.alertUserModalVisible);
 
           }}
         >
@@ -431,13 +479,13 @@ function Contacts(props) {
 
                 <View style={{ justifyContent: 'center', alignItems: 'center', fontSize: 20, marginBottom: '20%' }}>
                   <Text style={[globalStyles.bold, { color: '#ffffff', textAlign: 'center' }]}>
-                    {userMessage}
+                    {this.state.userMessage}
                   </Text>
                 </View>
 
                 <TouchableOpacity
                   style={[globalStyles.pressableRegisterGoBackButton, { width: '70%', backgroundColor: '#4e5559' }]}
-                  onPress={() => { return setAlertUserModalVisibleState(!alertUserModalVisible); }}
+                  onPress={() => { return this.setAlertUserModalVisibleState(!this.state.alertUserModalVisible); }}
                 >
 
                   <Text style={globalStyles.registerGoBackText}>
@@ -453,58 +501,59 @@ function Contacts(props) {
 
     );
 
-  };
+  }
 
-  return (
+  render() {
 
-  // the blocked prop is used to determine whether to render for the contacts screen or blocked users screen
+    // the blocked prop is used to determine whether to render for the contacts screen or blocked users screen
+    const { name } = this.props;
 
-    isLoading ? (
+    if (this.state.isLoading) {
 
-      <View style={{ justifyContent: 'center', alignContent: 'center' }}>
-        <ActivityIndicator />
-      </View>
+      return (
+        <View style={{ justifyContent: 'center', alignContent: 'center' }}>
+          <ActivityIndicator />
+        </View>
+      );
 
-    )
-      : (
+    }
 
-        <View style={styles.container}>
+    return (
 
-          <View style={{ flex: 3, flexDirection: 'row' }}>
+      <View style={styles.container}>
 
-            <Image
-              src={{ uri: getProfileImage() }}
-              // defaultSource={require('../whatsthatlogo.png')}
-              style={styles.image}
-            />
+        <View style={{ flex: 3, flexDirection: 'row' }}>
 
-            <Text style={styles.name}>
-              {props.name}
-            </Text>
+          <Image
+            src={{ uri: this.state.userImage }}
+            // defaultSource={require('../whatsthatlogo.png')}
+            style={styles.image}
+          />
 
-          </View>
-
-          {
-
-            props.addToChat
-              ? (
-                renderAddOrRemoveContact()
-              )
-              : (
-                <TouchableOpacity style={{ justifyContent: 'flex-end' }} onPress={() => { setOptionsModalVisibleState(true); }}>
-                  <Ionicons name="ellipsis-vertical-outline" size={24} color="#ffffff" />
-                </TouchableOpacity>
-              )
-
-          }
-
-          { renderOptionsModal() }
-          { renderAlertUserModal() }
+          <Text style={styles.name}>
+            {name}
+          </Text>
 
         </View>
 
-      )
-  );
+        { this.props.addToChat
+          ? (
+            this.renderAddOrRemoveContact()
+          )
+          : (
+            <TouchableOpacity style={{ justifyContent: 'flex-end' }} onPress={() => { this.setOptionsModalVisibleState(true); }}>
+              <Ionicons name="ellipsis-vertical-outline" size={24} color="#ffffff" />
+            </TouchableOpacity>
+          )}
+
+        { this.renderOptionsModal() }
+        { this.renderAlertUserModal() }
+
+      </View>
+
+    );
+
+  }
 
 }
 

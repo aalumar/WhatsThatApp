@@ -1,85 +1,125 @@
+/* eslint-disable react/jsx-no-bind */
+
 'use strict';
 
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
+import { Camera, CameraType } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CameraComponent from './camera-component';
 import globalStyles from '../../styles/global';
 
 const validator = require('email-validator');
 
-class Profile extends Component {
+function Profile(props) {
 
-  constructor(props) {
+  const [firstName, setFirstName] = useState(props.firstName);
+  const [lastName, setLastName] = useState(props.lastName);
+  const [email, setEmail] = useState(props.email);
+  const [password, setPassword] = useState('');
+  const [failText, setFailText] = useState('');
+  const [formComplete, setFormComplete] = useState(false);
+  const [cameraType, setCameraType] = useState(CameraType.back);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
 
-    super(props);
+  function toggleCameraType() {
 
-    this.state = {
-      firstName: this.props.firstName,
-      lastName: this.props.lastName,
-      email: this.props.email,
-      password: '',
-      failText: '',
-      formComplete: false
-    };
+    setCameraType((current) => { return (current === CameraType.back ? CameraType.front : CameraType.back); });
+    console.log('Camera: ' + cameraType);
 
   }
 
-  validateInputs = () => {
+  function cameraRender() {
 
-    const isEmailValid = validator.validate(this.state.email);
+    // if (!permission || !permission.granted) {
+
+    //   console.log('No access to camera.');
+    //   return (<View />);
+
+    // }
+
+    console.log('Enter');
+
+    return (
+
+      <View style={{ flex: 1 }}>
+
+        <Camera style={styles.camera} type={CameraType.back}>
+
+          <View style={styles.buttonContainer}>
+
+            <TouchableOpacity>
+
+              <Text> FLIP CAMERA </Text>
+
+            </TouchableOpacity>
+
+          </View>
+
+        </Camera>
+
+      </View>
+
+    );
+
+  }
+
+  const validateInputs = () => {
+
+    const isEmailValid = validator.validate(email);
 
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,30}$/;
-    const isPassValid = passwordRegex.test(this.state.password);
+    const isPassValid = passwordRegex.test(password);
 
     // if else statements to return error message to the user regarding what part of the form is incorrect
     if (!isEmailValid && !isPassValid) {
 
-      this.setState({ failText: 'Email and password are invalid.' });
+      setFailText('Email and password are invalid.');
 
     }
     else if (!isEmailValid) {
 
-      this.setState({ failText: 'Email is invalid.' });
+      setFailText('Email is invalid.');
 
     }
     else if (!isPassValid) {
 
-      this.setState({ failText: 'Password is invalid.' });
+      setFailText('Password is invalid.');
 
     }
 
     else {
 
-      this.setState({ failText: '' });
-      this.state.formComplete = true;
+      setFailText('');
+      setFormComplete(true);
 
     }
 
     // check if any part of the form is incomplete to override the error message
-    if (this.state.firstName === ''
-        || this.state.lastName === ''
-        || this.state.email === ''
-        || this.state.password === '') {
+    if (firstName === ''
+        || lastName === ''
+        || email === ''
+        || password === '') {
 
-      this.setState({ failText: 'Please complete the form.' });
+      setFailText('Please complete the form.');
 
     }
 
-    if (this.state.formComplete) {
+    if (formComplete) {
 
-      this.updateProfile();
+      updateProfile();
 
     }
 
   };
 
-  updateProfile = async () => {
+  const updateProfile = async () => {
 
     const updatedUserData = {
-      first_name: this.state.firstName,
-      last_name: this.state.lastName,
-      email: this.state.email,
-      password: this.state.password
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password
     };
 
     const id = await AsyncStorage.getItem('whatsthat_user_id');
@@ -98,7 +138,7 @@ class Profile extends Component {
 
         if (status === 200) {
 
-          this.props.getProfileFunction();
+          props.getProfileFunction();
           throw 'Details updated successfully.';
 
         }
@@ -113,91 +153,88 @@ class Profile extends Component {
     // Add error message here
       .catch((error) => {
 
-        this.setState({ failText: error });
+        setFailText(error);
 
       });
 
   };
 
-  render() {
+  return (
 
-    return (
+    <View style={styles.container}>
 
-      <View style={styles.container}>
+      {/* { cameraRender() } */}
 
-        <View style={{ flex: 2, justifyContent: 'center' }}>
+      <View style={{ flex: 2, justifyContent: 'center' }}>
 
-          <TouchableOpacity style={{ flex: 1 }}>
-            <Image
-              src={{ uri: this.props.image }}
-              defaultSource={require('../whatsthatlogo.png')}
-              style={styles.image}
-            />
-          </TouchableOpacity>
+        <TouchableOpacity style={{ flex: 1 }} onPress={() => { cameraRender(); }}>
+          <Image
+            src={{ uri: props.image }}
+            defaultSource={require('../whatsthatlogo.png')}
+            style={styles.image}
+          />
+        </TouchableOpacity>
+
+      </View>
+
+      <View style={{ flex: 3 }}>
+
+        <View style={{ marginBottom: '5%' }}>
+          <Text style={styles.textTitle}> First name </Text>
+          <TextInput
+            style={[globalStyles.textInput, styles.name, { marginBottom: '0%' }]}
+            defaultValue={props.firstName}
+            onChangeText={(_firstName) => { return setFirstName(_firstName); }}
+          />
+        </View>
+
+        <View style={{ marginBottom: '5%' }}>
+          <Text style={styles.textTitle}> Last name </Text>
+          <TextInput
+            style={[globalStyles.textInput, styles.name, { marginBottom: '0%' }]}
+            defaultValue={props.lastName}
+            onChangeText={(_lastName) => { return setLastName(_lastName); }}
+          />
+        </View>
+
+        <View style={{ marginBottom: '5%' }}>
+          <Text style={styles.textTitle}> Email </Text>
+          <TextInput
+            style={[globalStyles.textInput, styles.name, { marginBottom: '0%' }]}
+            defaultValue={props.email}
+            onChangeText={(_email) => { return setEmail(_email); }}
+          />
+        </View>
+
+        <View style={{ marginBottom: '15%' }}>
+          <Text style={styles.textTitle}> Password </Text>
+          <TextInput
+            style={[globalStyles.textInput, styles.name, { marginBottom: '0%' }]}
+            onChangeText={(_password) => { return setPassword(_password); }}
+          />
+        </View>
+
+        <View style={{ marginBottom: '15%' }}>
+
+          <Text style={globalStyles.failText}>
+            {failText}
+          </Text>
 
         </View>
 
-        <View style={{ flex: 3 }}>
-
-          <View style={{ marginBottom: '5%' }}>
-            <Text style={styles.textTitle}> First name </Text>
-            <TextInput
-              style={[globalStyles.textInput, styles.name, { marginBottom: '0%' }]}
-              defaultValue={this.props.firstName}
-              onChangeText={(firstName) => { return this.setState({ firstName }); }}
-            />
-          </View>
-
-          <View style={{ marginBottom: '5%' }}>
-            <Text style={styles.textTitle}> Last name </Text>
-            <TextInput
-              style={[globalStyles.textInput, styles.name, { marginBottom: '0%' }]}
-              defaultValue={this.props.lastName}
-              onChangeText={(lastName) => { return this.setState({ lastName }); }}
-            />
-          </View>
-
-          <View style={{ marginBottom: '5%' }}>
-            <Text style={styles.textTitle}> Email </Text>
-            <TextInput
-              style={[globalStyles.textInput, styles.name, { marginBottom: '0%' }]}
-              defaultValue={this.props.email}
-              onChangeText={(email) => { return this.setState({ email }); }}
-            />
-          </View>
-
-          <View style={{ marginBottom: '15%' }}>
-            <Text style={styles.textTitle}> Password </Text>
-            <TextInput
-              style={[globalStyles.textInput, styles.name, { marginBottom: '0%' }]}
-              onChangeText={(password) => { return this.setState({ password }); }}
-            />
-          </View>
-
-          <View style={{ marginBottom: '15%' }}>
-
-            <Text style={globalStyles.failText}>
-              {this.state.failText}
-            </Text>
-
-          </View>
-
-          <View>
-            <Button
-              color="#2a363b"
-              title="Update details"
-              // disabled={true}
-              onPress={() => { this.validateInputs(); }}
-            />
-          </View>
-
+        <View>
+          <Button
+            color="#2a363b"
+            title="Update details"
+            onPress={() => { validateInputs(); }}
+          />
         </View>
 
       </View>
 
-    );
+    </View>
 
-  }
+  );
 
 }
 
@@ -222,6 +259,13 @@ const styles = StyleSheet.create({
 
   name: {
     fontStyle: 'normal'
+  },
+
+  buttonContainer: {
+    alignSelf: 'flex-end',
+    padding: 5,
+    margin: 5,
+    backgroundColor: 'steelblue'
   }
 });
 
