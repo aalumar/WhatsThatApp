@@ -16,7 +16,8 @@ class AddContactScreen extends Component {
 
       isLoading: false,
       contactsList: [],
-      searchQuery: ''
+      searchQuery: '',
+      chatMembers: []
 
     };
 
@@ -32,6 +33,7 @@ class AddContactScreen extends Component {
     });
 
     this.props.navigation.setOptions({ title: 'Search users' });
+    this.getChatMembers();
 
   }
 
@@ -51,6 +53,30 @@ class AddContactScreen extends Component {
       this.props.navigation.navigate('Login');
 
     }
+
+  };
+
+  getChatMembers = async () => {
+
+    return fetch('http://localhost:3333/api/1.0.0/chat/' + this.props.route.params.chatID, {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+      }
+    })
+      .then((response) => { return response.json(); })
+      .then((responseJson) => {
+
+        this.setState({
+          chatMembers: responseJson.members
+        }, () => { console.log(this.state.chatMembers); });
+
+      })
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+
+      });
 
   };
 
@@ -119,6 +145,8 @@ class AddContactScreen extends Component {
               data={this.state.contactsList}
               renderItem={({ item }) => {
 
+                const userExistsInChat = this.state.chatMembers.some((member) => { return member.user_id === item.user_id; });
+
                 return (
 
                   <Contacts
@@ -128,6 +156,7 @@ class AddContactScreen extends Component {
                     blocked={false}
                     add={true}
                     addToChat={this.props.route.params.addToChat}
+                    userExistsInChat={userExistsInChat}
                   />
 
                 );

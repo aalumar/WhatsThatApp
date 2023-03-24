@@ -254,6 +254,41 @@ class Contacts extends Component {
 
   };
 
+  removeContactFromChat = async () => {
+
+    return fetch('http://localhost:3333/api/1.0.0/chat/' + this.props.chatID + '/user/' + this.props.id, {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+      },
+      method: 'delete'
+    })
+      .then((response) => {
+
+        const status = response.status;
+        if (status === 200) {
+
+          throw 'Contact removed from chat successfully!';
+
+        }
+        else if (status === 500) {
+
+          throw 'Please try again in a bit.';
+
+        }
+
+      })
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+        this.setState({
+          userMessage: error
+        });
+
+      });
+
+  };
+
   // eslint-disable-next-line class-methods-use-this
   getProfileImage = async () => {
 
@@ -285,6 +320,44 @@ class Contacts extends Component {
       });
 
   };
+
+  renderAddOrRemoveContact() {
+
+    // render the component with the remove icon if a user exists in the chat
+    // otherwise render the plus icon to add them to the chat
+    if (this.props.userExistsInChat) {
+
+      return (
+        <TouchableOpacity
+          style={{ justifyContent: 'flex-end' }}
+          onPress={() => {
+
+            this.removeContactFromChat();
+            this.setAlertUserModalVisibleState(true);
+
+          }}
+        >
+          <Ionicons name="remove" size={24} color="#ffffff" />
+        </TouchableOpacity>
+      );
+
+    }
+
+    return (
+      <TouchableOpacity
+        style={{ justifyContent: 'flex-end' }}
+        onPress={() => {
+
+          this.addContactToChat();
+          this.setAlertUserModalVisibleState(true);
+
+        }}
+      >
+        <Ionicons name="add-outline" size={24} color="#ffffff" />
+      </TouchableOpacity>
+    );
+
+  }
 
   renderOptionsModal() {
 
@@ -342,7 +415,7 @@ class Contacts extends Component {
                 <View style={{ borderBottomColor: '#ffffff', borderBottomWidth: 1 }} />
 
                 <TouchableOpacity
-                  style={{ flex: 1, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                  style={styles.optionsView}
                   onPress={() => {
 
                     this.props.blocked
@@ -405,7 +478,7 @@ class Contacts extends Component {
               >
 
                 <View style={{ justifyContent: 'center', alignItems: 'center', fontSize: 20, marginBottom: '20%' }}>
-                  <Text style={[globalStyles.bold, { color: '#ffffff' }]}>
+                  <Text style={[globalStyles.bold, { color: '#ffffff', textAlign: 'center' }]}>
                     {this.state.userMessage}
                   </Text>
                 </View>
@@ -433,7 +506,7 @@ class Contacts extends Component {
   render() {
 
     // the blocked prop is used to determine whether to render for the contacts screen or blocked users screen
-    const { image, name } = this.props;
+    const { name } = this.props;
 
     if (this.state.isLoading) {
 
@@ -465,17 +538,7 @@ class Contacts extends Component {
 
         { this.props.addToChat
           ? (
-            <TouchableOpacity
-              style={{ justifyContent: 'flex-end' }}
-              onPress={() => {
-
-                this.addContactToChat();
-                this.setAlertUserModalVisibleState(true);
-
-              }}
-            >
-              <Ionicons name="add-outline" size={24} color="#ffffff" />
-            </TouchableOpacity>
+            this.renderAddOrRemoveContact()
           )
           : (
             <TouchableOpacity style={{ justifyContent: 'flex-end' }} onPress={() => { this.setOptionsModalVisibleState(true); }}>

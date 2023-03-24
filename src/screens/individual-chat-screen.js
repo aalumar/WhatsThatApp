@@ -100,7 +100,6 @@ class IndividualChat extends Component {
 
   sendMessage = async (messages = []) => {
 
-    console.log(messages);
     const chatID = this.props.route.params.chatID;
     const message = {
       message: messages[0].text
