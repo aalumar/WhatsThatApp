@@ -6,6 +6,7 @@ import TabNavigator from './tab-navigator';
 import IndividualChat from '../src/screens/individual-chat-screen';
 import BlockedUsersScreen from '../src/screens/blocked-users-screen';
 import AddContactScreen from '../src/screens/add-contact-screen';
+import CameraScreen from '../src/screens/camera-screen';
 
 class ChatStackNavigator extends Component {
 
@@ -35,6 +36,10 @@ class ChatStackNavigator extends Component {
         <Stack.Screen
           name="AddContact"
           component={AddContactScreen}
+        />
+        <Stack.Screen
+          name="Camera"
+          component={CameraScreen}
         />
 
       </Stack.Navigator>

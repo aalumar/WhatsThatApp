@@ -4,9 +4,7 @@
 
 import React, { useState } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CameraComponent from './camera-component';
 import globalStyles from '../../styles/global';
 
 const validator = require('email-validator');
@@ -19,50 +17,6 @@ function Profile(props) {
   const [password, setPassword] = useState('');
   const [failText, setFailText] = useState('');
   const [formComplete, setFormComplete] = useState(false);
-  const [cameraType, setCameraType] = useState(CameraType.back);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
-
-  function toggleCameraType() {
-
-    setCameraType((current) => { return (current === CameraType.back ? CameraType.front : CameraType.back); });
-    console.log('Camera: ' + cameraType);
-
-  }
-
-  function cameraRender() {
-
-    // if (!permission || !permission.granted) {
-
-    //   console.log('No access to camera.');
-    //   return (<View />);
-
-    // }
-
-    console.log('Enter');
-
-    return (
-
-      <View style={{ flex: 1 }}>
-
-        <Camera style={styles.camera} type={CameraType.back}>
-
-          <View style={styles.buttonContainer}>
-
-            <TouchableOpacity>
-
-              <Text> FLIP CAMERA </Text>
-
-            </TouchableOpacity>
-
-          </View>
-
-        </Camera>
-
-      </View>
-
-    );
-
-  }
 
   const validateInputs = () => {
 
@@ -163,11 +117,9 @@ function Profile(props) {
 
     <View style={styles.container}>
 
-      {/* { cameraRender() } */}
-
       <View style={{ flex: 2, justifyContent: 'center' }}>
 
-        <TouchableOpacity style={{ flex: 1 }} onPress={() => { cameraRender(); }}>
+        <TouchableOpacity style={{ flex: 1 }} onPress={() => { props.navigation.navigate('Camera'); }}>
           <Image
             src={{ uri: props.image }}
             defaultSource={require('../whatsthatlogo.png')}

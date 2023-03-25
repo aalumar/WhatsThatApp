@@ -115,6 +115,7 @@ function ProfileScreen(props) {
         email={userProfile.email}
         image={userProfileImage}
         getProfileFunction={getProfile}
+        navigation={props.navigation}
       />
 
     </View>
