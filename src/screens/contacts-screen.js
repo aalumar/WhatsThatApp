@@ -1,57 +1,45 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Contacts from '../components/contacts-component';
 
-class ContactsScreen extends Component {
+function ContactsScreen(props) {
 
-  constructor(props) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [contactsList, setContactsList] = useState([]);
 
-    super(props);
+  useEffect(() => {
 
-    this.state = {
+    const unsubscribe = props.navigation.addListener('focus', () => {
 
-      isLoading: true,
-      contactsList: []
-
-    };
-
-  }
-
-  componentDidMount() {
-
-    // check user is logged in
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
-
-      this.checkLoggedIn();
-      this.getContacts();
+      checkLoggedIn();
+      getContacts();
 
     });
 
-  }
+    return () => {
 
-  componentWillUnmount() {
+      unsubscribe();
 
-    // close listener to avoid memory leakage
-    this.unsubscribe();
+    };
 
-  }
+  }, []);
 
   // function to check if the user is logged in, otherwise send them back to the login page
-  checkLoggedIn = async () => {
+  const checkLoggedIn = async () => {
 
     const value = await AsyncStorage.getItem('whatsthat_session_token');
     if (value == null) {
 
-      this.props.navigation.navigate('Login');
+      props.navigation.navigate('Login');
 
     }
 
   };
 
-  getContacts = async () => {
+  const getContacts = async () => {
 
     return fetch('http://localhost:3333/api/1.0.0/contacts', {
       headers: {
@@ -61,10 +49,8 @@ class ContactsScreen extends Component {
       .then((response) => { return response.json(); })
       .then((responseJson) => {
 
-        this.setState({
-          isLoading: false,
-          contactsList: responseJson
-        });
+        setIsLoading(false);
+        setContactsList(responseJson);
 
       })
 
@@ -77,46 +63,68 @@ class ContactsScreen extends Component {
 
   };
 
-  render() {
+  // eslint-disable-next-line class-methods-use-this
+  const getProfileImage = async (id) => {
 
-    if (this.state.isLoading) {
+    return fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
+      }
+    })
+      .then((response) => { return response.blob(); })
+      .then((responseBlob) => {
 
-      return (
-        <View style={[styles.flatListParentView, { justifyContent: 'center', alignContent: 'center' }]}>
-          <ActivityIndicator />
-        </View>
-      );
+        const data = URL.createObjectURL(responseBlob);
+        return data;
 
-    }
+      })
+    // Add error message here
+      .catch((error) => {
+
+        console.log(error);
+
+      });
+
+  };
+
+  if (isLoading) {
 
     return (
-
-      <View style={styles.flatListParentView}>
-
-        <FlatList
-          data={this.state.contactsList}
-          renderItem={({ item }) => {
-
-            return (
-
-              <Contacts
-                id={item.user_id}
-                name={item.first_name + ' ' + item.last_name}
-                blocked={false}
-                getContactsFunction={this.getContacts}
-              />
-            );
-
-          }}
-          keyExtractor={({ id }) => { return id; }}
-
-        />
-
+      <View style={{ flex: 1, backgroundColor: '#99b898', justifyContent: 'center', alignContent: 'center' }}>
+        <ActivityIndicator />
       </View>
-
     );
 
   }
+
+  return (
+
+    <View style={styles.flatListParentView}>
+
+      <FlatList
+        data={contactsList}
+        renderItem={({ item }) => {
+
+          const image = getProfileImage(item.user_id);
+
+          return (
+
+            <Contacts
+              id={item.user_id}
+              name={item.first_name + ' ' + item.last_name}
+              image={image}
+              blocked={false}
+              getContactsFunction={getContacts}
+            />
+          );
+
+        }}
+        keyExtractor={({ id }) => { return id; }}
+      />
+
+    </View>
+
+  );
 
 }
 

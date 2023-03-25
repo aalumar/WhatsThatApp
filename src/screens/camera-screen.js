@@ -1,12 +1,17 @@
 /* eslint-disable react/jsx-no-bind */
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Camera, CameraType } from 'expo-camera';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 function CameraScreen() {
 
   const [type, setType] = useState(CameraType.back);
+  const [camera, setCamera] = useState(null);
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const navigation = useNavigation();
 
   function toggleCameraType() {
 
@@ -15,14 +20,82 @@ function CameraScreen() {
 
   }
 
+  async function takePhoto() {
+
+    if (camera) {
+
+      const options = { quality: 0.5, base64: true, onPictureSaved: (data) => { return sendToServer(data); } };
+      const data = await camera.takePictureAsync(options);
+
+    }
+
+    async function sendToServer(data) {
+
+      const id = await AsyncStorage.getItem('whatsthat_user_id');
+
+      const res = await fetch(data.base64);
+      const blob = await res.blob();
+
+      return fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          'Content-Type': 'image/png'
+        },
+        method: 'post',
+        body: blob
+      })
+        .then((response) => {
+
+          navigation.goBack();
+
+          const status = response.status;
+          if (status === 200) {
+
+            throw 'Photo uploaded successfully.';
+
+          }
+          else if (status === 500) {
+
+            throw 'Please try again in a bit.';
+
+          }
+
+        })
+
+      // Add error message here
+        .catch((error) => {
+
+          console.log(error);
+
+        });
+
+    }
+
+  }
+
+  async function two() {
+
+    const newProfilePhoto = takePhoto();
+    navigation.navigate('Profile', { newPhoto: newProfilePhoto });
+
+  }
+
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type}>
+      <Camera style={styles.camera} type={type} ref={(ref) => { return setCamera(ref); }}>
+
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-            <Text style={styles.text}>Flip Camera</Text>
+            <Ionicons name="camera-reverse-outline" size={42} color="#ffffff" />
           </TouchableOpacity>
         </View>
+
+        <View style={styles.takePhoto}>
+          <TouchableOpacity onPress={() => { takePhoto(); }}>
+            <Feather name="circle" size={100} color="#ffffff" />
+          </TouchableOpacity>
+        </View>
+
       </Camera>
     </View>
   );
@@ -35,18 +108,17 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignSelf: 'flex-end',
-    padding: 5,
-    margin: 5,
-    backgroundColor: 'steelblue'
+    padding: '2%',
+    backgroundColor: 'transparent'
   },
   button: {
     width: '100%',
     height: '100%'
   },
-  text: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#ddd'
+  takePhoto: {
+    height: '90%',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   }
 });
 

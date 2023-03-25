@@ -228,7 +228,7 @@ class PreviewChat extends Component {
 
         <View style={{ flex: 1, marginRight: '5%' }}>
           <Image
-            src={{ uri: image }}
+            source={{ uri: image }}
             defaultSource={require('../whatsthatlogo.png')}
             style={styles.image}
             resizeMode="contain"

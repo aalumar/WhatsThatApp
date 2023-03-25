@@ -149,11 +149,6 @@ class RegisterScreen extends Component {
               What's That?
             </Text>
 
-            {/* <Image
-              source={require('./whatsthatlogo.png')}
-              style={globalStyles.logo}
-            /> */}
-
           </View>
 
           { /* Form detail view */ }

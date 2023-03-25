@@ -17,10 +17,10 @@ function ProfileScreen(props) {
     const unsubscribe = props.navigation.addListener('focus', () => {
 
       checkLoggedIn();
+      getProfileImage();
 
     });
 
-    getProfileImage();
     getProfile();
 
     return () => {
@@ -81,7 +81,7 @@ function ProfileScreen(props) {
       .then((responseBlob) => {
 
         const data = URL.createObjectURL(responseBlob);
-
+        console.log(data);
         setUserProfileImage(data);
 
       })

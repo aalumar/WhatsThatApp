@@ -121,7 +121,7 @@ function Profile(props) {
 
         <TouchableOpacity style={{ flex: 1 }} onPress={() => { props.navigation.navigate('Camera'); }}>
           <Image
-            src={{ uri: props.image }}
+            source={{ uri: props.image }}
             defaultSource={require('../whatsthatlogo.png')}
             style={styles.image}
           />

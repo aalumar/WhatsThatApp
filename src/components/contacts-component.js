@@ -250,12 +250,7 @@ function Contacts(props) {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
       }
     })
-      .then((response) => {
-
-        console.log(response);
-        return response.blob();
-
-      })
+      .then((response) => { return response.blob(); })
       .then((responseBlob) => {
 
         const data = URL.createObjectURL(responseBlob);
@@ -473,8 +468,8 @@ function Contacts(props) {
           <View style={{ flex: 3, flexDirection: 'row' }}>
 
             <Image
-              src={{ uri: getProfileImage() }}
-              // defaultSource={require('../whatsthatlogo.png')}
+              source={{ uri: props.image }}
+              defaultSource={require('../whatsthatlogo.png')}
               style={styles.image}
             />
 

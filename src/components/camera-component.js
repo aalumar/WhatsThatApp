@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Camera, CameraType } from 'expo-camera';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-function CameraComponent() {
+function CameraComponent(navigation) {
 
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -19,7 +19,7 @@ function CameraComponent() {
     <View style={styles.container}>
       <Camera style={styles.camera} type={type}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
+          <TouchableOpacity style={styles.button} onPress={() => { navigation.goBack()}}>
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
         </View>
