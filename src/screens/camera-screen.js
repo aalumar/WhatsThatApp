@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
-import React, { useMemo, useState } from 'react';
+
+import React, { useState } from 'react';
 import { Camera, CameraType } from 'expo-camera';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -70,13 +71,6 @@ function CameraScreen() {
         });
 
     }
-
-  }
-
-  async function two() {
-
-    const newProfilePhoto = takePhoto();
-    navigation.navigate('Profile', { newPhoto: newProfilePhoto });
 
   }
 

@@ -11,7 +11,6 @@ function Contacts(props) {
   const [optionsModalVisible, setOptionsModalVisibleState] = useState(false);
   const [alertUserModalVisible, setAlertUserModalVisibleState] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [userImage, setUserImage] = useState(null);
   const [userMessage, setUserMessage] = useState('');
 
   const removeContact = async (b) => {
@@ -238,31 +237,6 @@ function Contacts(props) {
 
         console.log(error);
         setUserMessage(error);
-
-      });
-
-  };
-
-  const getProfileImage = async () => {
-
-    return fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/photo', {
-      headers: {
-        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token')
-      }
-    })
-      .then((response) => { return response.blob(); })
-      .then((responseBlob) => {
-
-        const data = URL.createObjectURL(responseBlob);
-
-        setLoading(false);
-        return data;
-
-      })
-    // Add error message here
-      .catch((error) => {
-
-        console.log(error);
 
       });
 

@@ -4,7 +4,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity, Modal, Text, StyleSheet, TextInput } from 'react-native';
+import { View, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity, Modal, Text, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GiftedChat } from 'react-native-gifted-chat';
 import globalStyles from '../../styles/global';
@@ -22,7 +22,8 @@ class IndividualChat extends Component {
       userID: null,
       selectedMessage: null,
       updatedMessage: '',
-      messageLongPressModalVisible: false
+      messageLongPressModalVisible: false,
+      intervalID: null
 
     };
 
@@ -39,6 +40,12 @@ class IndividualChat extends Component {
 
     });
 
+    this.state.intervalID = setInterval(async () => {
+
+      await this.getMessages();
+
+    }, 2000);
+
     // Updating header title of stack navigator to the chat's name
     this.props.navigation.setOptions({ title: this.props.route.params.chatName });
 
@@ -48,13 +55,14 @@ class IndividualChat extends Component {
 
     }
 
-    await this.getMessages();
+    // await this.getMessages();
 
   }
 
   componentWillUnmount() {
 
     // close listener to avoid memory leakage
+    clearInterval(this.state.intervalID);
     this.unsubscribe();
 
   }
@@ -119,7 +127,7 @@ class IndividualChat extends Component {
         if (status === 200) {
 
           this.onSend();
-          this.componentDidMount();
+          this.getMessages();
           throw 'Message sent successfully.';
 
         }

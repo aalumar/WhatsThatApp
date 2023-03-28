@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
+
 import React, { useState } from 'react';
 import { Camera, CameraType } from 'expo-camera';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
