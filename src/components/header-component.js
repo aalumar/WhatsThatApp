@@ -48,7 +48,7 @@ class Header extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
 
         if (status === 200) {
 
@@ -157,7 +157,7 @@ class Header extends Component {
                 <View style={{
                   backgroundColor: '#2a363b',
                   width: '100%',
-                  height: '15%',
+                  height: '25%',
                   borderRadius: 10,
                   padding: 10
                 }}
@@ -175,6 +175,24 @@ class Header extends Component {
 
                     <Text style={{ fontSize: 18, color: '#ffffff' }}>
                       View blocked contacts
+                    </Text>
+
+                  </TouchableOpacity>
+
+                  <View style={{ borderBottomColor: '#ffffff', borderBottomWidth: 1 }} />
+
+                  <TouchableOpacity
+                    style={styles.optionsView}
+                    onPress={() => {
+
+                      this.props.navigation.navigate('DraftedMessages');
+                      this.setOptionsModalVisibleState(!this.state.optionsModalVisible);
+
+                    }}
+                  >
+
+                    <Text style={{ fontSize: 18, color: '#ffffff' }}>
+                      View drafted messages
                     </Text>
 
                   </TouchableOpacity>

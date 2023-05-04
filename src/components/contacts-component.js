@@ -10,7 +10,7 @@ function Contacts(props) {
 
   const [optionsModalVisible, setOptionsModalVisibleState] = useState(false);
   const [alertUserModalVisible, setAlertUserModalVisibleState] = useState(false);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [userMessage, setUserMessage] = useState('');
 
   const removeContact = async (b) => {
@@ -23,7 +23,7 @@ function Contacts(props) {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           // if user is removing a contact on the contacts screen, call getContacts()
@@ -74,7 +74,7 @@ function Contacts(props) {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           props.getContactsFunction();
@@ -114,7 +114,7 @@ function Contacts(props) {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           props.getBlockedFunction();
@@ -148,7 +148,7 @@ function Contacts(props) {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           throw 'Contact added successfully!';
@@ -186,7 +186,7 @@ function Contacts(props) {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           throw 'Contact added to chat successfully!';
@@ -219,7 +219,7 @@ function Contacts(props) {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           throw 'Contact removed from chat successfully!';

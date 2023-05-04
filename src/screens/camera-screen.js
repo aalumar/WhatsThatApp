@@ -11,7 +11,7 @@ function CameraScreen() {
 
   const [type, setType] = useState(CameraType.back);
   const [camera, setCamera] = useState(null);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+  // const [permission, requestPermission] = Camera.useCameraPermissions();
   const navigation = useNavigation();
 
   function toggleCameraType() {
@@ -49,7 +49,7 @@ function CameraScreen() {
 
           navigation.goBack();
 
-          const status = response.status;
+          const { status } = response;
           if (status === 200) {
 
             throw 'Photo uploaded successfully.';

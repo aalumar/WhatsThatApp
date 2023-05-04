@@ -108,7 +108,7 @@ class IndividualChat extends Component {
 
   sendMessage = async (messages = []) => {
 
-    const chatID = this.props.route.params.chatID;
+    const { chatID } = this.props.route.params;
     const message = {
       message: messages[0].text
     };
@@ -123,7 +123,7 @@ class IndividualChat extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           this.onSend();
@@ -150,7 +150,7 @@ class IndividualChat extends Component {
 
   deleteMessage = async (message) => {
 
-    const chatID = this.props.route.params.chatID;
+    const { chatID } = this.props.route.params;
     // eslint-disable-next-line no-underscore-dangle
     const messageID = message._id;
 
@@ -162,7 +162,7 @@ class IndividualChat extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           this.componentDidMount();
@@ -188,7 +188,7 @@ class IndividualChat extends Component {
 
   editMessage = async () => {
 
-    const chatID = this.props.route.params.chatID;
+    const { chatID } = this.props.route.params;
     // eslint-disable-next-line no-underscore-dangle
     const messageID = this.state.selectedMessage._id;
     const message = {
@@ -205,7 +205,7 @@ class IndividualChat extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           this.componentDidMount();
@@ -244,7 +244,7 @@ class IndividualChat extends Component {
 
   getMessages = async () => {
 
-    const chatID = this.props.route.params.chatID;
+    const { chatID } = this.props.route.params;
 
     return fetch('http://localhost:3333/api/1.0.0/chat/' + chatID, {
       headers: {

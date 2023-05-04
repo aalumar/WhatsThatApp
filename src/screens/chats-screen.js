@@ -120,7 +120,7 @@ class ChatsScreen extends Component {
 
         this.getChats();
 
-        const status = response.status;
+        const { status } = response;
         if (status === 201) {
 
           throw 'Chat created successfully!';

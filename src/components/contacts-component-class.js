@@ -58,7 +58,8 @@ class Contacts extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
+
         if (status === 200) {
 
           // if user is removing a contact on the contacts screen, call getContacts()
@@ -111,7 +112,8 @@ class Contacts extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
+
         if (status === 200) {
 
           this.props.getContactsFunction();
@@ -153,7 +155,8 @@ class Contacts extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
+
         if (status === 200) {
 
           this.props.getBlockedFunction();
@@ -189,7 +192,8 @@ class Contacts extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
+
         if (status === 200) {
 
           throw 'Contact added successfully!';
@@ -229,7 +233,8 @@ class Contacts extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
+
         if (status === 200) {
 
           throw 'Contact added to chat successfully!';
@@ -264,7 +269,8 @@ class Contacts extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
+
         if (status === 200) {
 
           throw 'Contact removed from chat successfully!';

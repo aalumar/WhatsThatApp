@@ -27,7 +27,6 @@ module.exports = {
     'react/destructuring-assignment': 0,
     'max-len': ['error', { code: 150, ignoreComments: true }],
     'brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
-    'prefer-destructuring': 0,
     'react/no-unescaped-entities': 0,
     'global-require': 0,
     'no-throw-literal': 0,

@@ -88,8 +88,7 @@ function Profile(props) {
     })
       .then((response) => {
 
-        const status = response.status;
-
+        const { status } = response;
         if (status === 200) {
 
           props.getProfileFunction();

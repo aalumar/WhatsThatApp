@@ -62,7 +62,7 @@ class PreviewChat extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
         if (status === 200) {
 
           this.props.getChatsFunction();

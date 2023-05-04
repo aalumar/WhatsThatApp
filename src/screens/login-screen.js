@@ -86,7 +86,7 @@ class LoginScreen extends Component {
     })
       .then((response) => {
 
-        const status = response.status;
+        const { status } = response;
 
         if (status === 200) {
 
