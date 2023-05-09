@@ -40,11 +40,15 @@ class IndividualChat extends Component {
 
     });
 
-    this.state.intervalID = setInterval(async () => {
+    const iID = setInterval(async () => {
 
       await this.getMessages();
 
     }, 2000);
+
+    this.setState({
+      intervalID: iID
+    });
 
     // Updating header title of stack navigator to the chat's name
     this.props.navigation.setOptions({ title: this.props.route.params.chatName });
@@ -54,8 +58,6 @@ class IndividualChat extends Component {
       await this.getUserID();
 
     }
-
-    // await this.getMessages();
 
   }
 
@@ -165,7 +167,7 @@ class IndividualChat extends Component {
         const { status } = response;
         if (status === 200) {
 
-          this.componentDidMount();
+          // this.componentDidMount();
           throw 'Message deleted successfully.';
 
         }
@@ -208,7 +210,7 @@ class IndividualChat extends Component {
         const { status } = response;
         if (status === 200) {
 
-          this.componentDidMount();
+          // this.componentDidMount();
           throw 'Message edited successfully.';
 
         }
