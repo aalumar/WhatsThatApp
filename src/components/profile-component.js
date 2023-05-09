@@ -2,7 +2,7 @@
 
 'use strict';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../../styles/global';
@@ -17,6 +17,18 @@ function Profile(props) {
   const [password, setPassword] = useState('');
   const [failText, setFailText] = useState('');
   const [formComplete, setFormComplete] = useState(false);
+
+  // adding a hook for the formComplete state to run whenever its state is updated
+  // initally had the check in validateInputs() but state updates are not reflected immediately so had to create a hook
+  useEffect(() => {
+
+    if (formComplete) {
+
+      updateProfile();
+
+    }
+
+  }, [formComplete]);
 
   const validateInputs = () => {
 
@@ -59,11 +71,11 @@ function Profile(props) {
 
     }
 
-    if (formComplete) {
+    // if (formComplete) {
 
-      updateProfile();
+    //   updateProfile();
 
-    }
+    // }
 
   };
 

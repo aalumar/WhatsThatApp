@@ -141,7 +141,7 @@ class PreviewChat extends Component {
                   }}
                 >
 
-                  <Text style={{ fontSize: 18, color: 'red' }}>
+                  <Text style={{ fontSize: 18, color: '#ffffff' }}>
                     Edit name
                   </Text>
 

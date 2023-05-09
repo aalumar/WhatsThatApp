@@ -90,9 +90,9 @@ class Header extends Component {
       <View style={styles.container}>
 
         {/* SEARCH */}
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Ionicons name="search-outline" size={28} color="#ffffff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* ADD */}
         <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddContact', { addToChat: false }); }}>
